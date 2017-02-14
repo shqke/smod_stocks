@@ -3,9 +3,13 @@
 #endif
 #define _stocks_keyhints_included
 
+#include <stocks/assert>
+
 stock void PrintKeyHintText(int client, const char[] fmt, any ...)
 {
-	char message[1024];
+	Assert(IsClient(client));
+	
+	static char message[1024];
 	VFormat(message, 1024, fmt, 3);
 	
 	Handle usermsg = StartMessageOne("KeyHintText", client, USERMSG_RELIABLE);
@@ -19,7 +23,7 @@ stock void PrintKeyHintText(int client, const char[] fmt, any ...)
 
 stock void PrintKeyHintTextAll(const char[] fmt, any ...)
 {
-	char message[1024];
+	static char message[1024];
 	VFormat(message, 1024, fmt, 2);
 	
 	Handle usermsg = StartMessageAll("KeyHintText", USERMSG_RELIABLE);

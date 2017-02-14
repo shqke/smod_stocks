@@ -1,40 +1,158 @@
 #if defined _stocks_entity_included
- #endinput
+	#endinput
 #endif
 #define _stocks_entity_included
 
 #include <sdktools_functions>
 #include <sdktools_entinput>
+#include <sdktools_entoutput>
 
-enum SolidType_t
+#include <stocks/assert>
+#include <stocks/property>
+
+#define NULL_ENTITY INVALID_ENT_REFERENCE
+
+stock int CreateEntityAt( const char[] classname, const float[3] origin = NULL_VECTOR, const float[3] angles = NULL_VECTOR, int edict = NULL_ENTITY )
 {
-	SOLID_NONE			= 0,	// no solid model
-	SOLID_BSP			= 1,	// a BSP tree
-	SOLID_BBOX			= 2,	// an AABB
-	SOLID_OBB			= 3,	// an OBB (not implemented yet)
-	SOLID_OBB_YAW		= 4,	// an OBB, constrained so that it can only yaw
-	SOLID_CUSTOM		= 5,	// Always call into the entity for tests
-	SOLID_VPHYSICS		= 6,	// solid vphysics object, get vcollide from the model and collide with that
-	SOLID_LAST,
+	static int entity;
+	if ( edict != NULL_ENTITY && IsValidEntity( edict ) ) {
+		return NULL_ENTITY;
+	}
+	
+	entity = CreateEntityByName(classname, edict);
+	
+	Assert( IsValidEdict( entity ) );
+	
+	TeleportEntity(entity, origin, angles, NULL_VECTOR);
+	
+	return entity;
+}
+
+static int m_hOwnerEntity = -2;
+stock void SetOwnerEntity( int entity, int owner )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf(entity, m_hOwnerEntity);
+	
+	SetEntDataEnt2(entity, m_hOwnerEntity, owner);
+}
+
+stock int GetOwnerEntity( int entity )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf(entity, m_hOwnerEntity);
+	
+	return GetEntDataEnt2(entity, m_hOwnerEntity);
+}
+
+static int m_hOwner = -2;
+stock void SetOwner( int entity, int owner )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf(entity, m_hOwner);
+	
+	SetEntDataEnt2(entity, m_hOwner, owner);
+}
+
+stock int GetOwner( int entity )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf(entity, m_hOwner);
+	
+	return GetEntDataEnt2(entity, m_hOwner);
+}
+
+static int m_hGroundEntity = -2;
+stock int GetGroundEntity( int entity )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf(entity, m_hGroundEntity);
+	
+	return GetEntDataEnt2(entity, m_hGroundEntity);
+}
+
+stock void SetGroundEntity( int entity, int other )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf(entity, m_hGroundEntity);
+	
+	SetEntDataEnt2(entity, m_hGroundEntity, other);
+	
+	if (IsValidEdict(other)) SetEntityFlags(entity, GetEntityFlags(entity) | FL_ONGROUND);
+}
+
+enum
+{
+	WL_NotInWater = 0,
+	WL_Feet,
+	WL_Waist,
+	WL_Eyes
 };
 
-enum SolidFlags_t
+static int m_nWaterLevel = -2;
+stock int GetWaterLevel( int entity )
 {
-	FSOLID_CUSTOMRAYTEST		= 0x0001,	// Ignore solid type + always call into the entity for ray tests
-	FSOLID_CUSTOMBOXTEST		= 0x0002,	// Ignore solid type + always call into the entity for swept box tests
-	FSOLID_NOT_SOLID			= 0x0004,	// Are we currently not solid?
-	FSOLID_TRIGGER				= 0x0008,	// This is something may be collideable but fires touch functions
-											// even when it's not collideable (when the FSOLID_NOT_SOLID flag is set)
-	FSOLID_NOT_STANDABLE		= 0x0010,	// You can't stand on this
-	FSOLID_VOLUME_CONTENTS		= 0x0020,	// Contains volumetric contents (like water)
-	FSOLID_FORCE_WORLD_ALIGNED	= 0x0040,	// Forces the collision rep to be world-aligned even if it's SOLID_BSP or SOLID_VPHYSICS
-	FSOLID_USE_TRIGGER_BOUNDS	= 0x0080,	// Uses a special trigger bounds separate from the normal OBB
-	FSOLID_ROOT_PARENT_ALIGNED	= 0x0100,	// Collisions are defined in root parent's local coordinate space
-	FSOLID_TRIGGER_TOUCH_DEBRIS	= 0x0200,	// This trigger will touch debris objects
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_nWaterLevel );
+	
+	return GetEntData( entity, m_nWaterLevel, 1 );
+}
 
-	FSOLID_MAX_BITS	= 10
-};
+static int m_iMaxHealth = -2;
+stock void SetMaxHealth( int entity, int amt )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_iMaxHealth );
+	
+	SetEntData( entity, m_iMaxHealth, amt, 4, true );
+}
 
+stock int GetMaxHealth( int entity )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_iMaxHealth );
+	
+	return GetEntData( entity, m_iMaxHealth, 4 );
+}
+
+static int m_iHealth = -2;
+stock int GetHealth( int entity )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_iHealth );
+	
+	return GetEntData( entity, m_iHealth, 4 );
+}
+
+#if !defined _smlib_entities_included
+	#define	DAMAGE_NO				0
+	#define DAMAGE_EVENTS_ONLY		1		// Call damage functions, but don't modify health
+	#define	DAMAGE_YES				2
+	#define	DAMAGE_AIM				3
+#endif
+
+static int m_takedamage = -2;
+stock void SetTakeDamage( int entity, int value )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_takedamage );
+	
+	SetEntData( entity, m_takedamage, value, 1 );
+}
+
+#if !defined _smlib_entities_included
+	#if !defined __thelpers_entity_included
 enum
 {
 	EFL_KILLME	=				(1<<0),	// This entity is marked for death -- This allows the game to actually delete ents at a safe time
@@ -86,8 +204,46 @@ enum
 	EFL_NO_PHYSCANNON_INTERACTION =	(1<<30),	// Physcannon can't pick these up or punt them
 	EFL_NO_DAMAGE_FORCES =		(1<<31),	// Doesn't accept forces from physics damage
 };
+	#endif
+#endif
 
-// entity effects
+static int m_iEFlags = -2;
+stock int GetEFlags( int entity )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_iEFlags );
+	
+	return GetEntData( entity, m_iEFlags, 4 );
+}
+
+stock void SetEFlags( int entity, int iEFlags )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_iEFlags );
+	
+	SetEntData( entity, m_iEFlags, iEFlags, 4 );
+}
+
+stock void AddEFlags( int entity, int nEFlagMask )
+{
+	SetEFlags( entity, GetEFlags( entity ) | nEFlagMask );
+}
+
+stock void RemoveEFlags( int entity, int nEFlagMask )
+{
+	SetEFlags( entity, GetEFlags( entity ) & ~nEFlagMask );
+}
+
+stock bool IsEFlagSet( int entity, int nEFlagMask )
+{
+	return ( GetEFlags( entity ) & nEFlagMask );
+}
+
+//
+// Effects
+//
 enum
 {
 	EF_BONEMERGE			= 0x001,	// Performs bone merge on client side
@@ -107,184 +263,693 @@ enum
 	EF_MAX_BITS = 10
 };
 
-enum UseType_t
+static int m_fEffects = -2;
+stock int GetEffects( int entity )
 {
-	USE_OFF = 0, 
-	USE_ON = 1, 
-	USE_SET = 2, 
-	USE_TOGGLE = 3
-};
-
-#define	MAX_EDICT_BITS				11
-#define NUM_ENT_ENTRY_BITS		(MAX_EDICT_BITS + 1)
-#define NUM_ENT_ENTRIES			(1 << NUM_ENT_ENTRY_BITS)
-#define ENT_ENTRY_MASK			(NUM_ENT_ENTRIES - 1)
-
-#define GetNetOffsetEx(%0,%1) %0 = GetNetOffset(%1, #%0)
-#define GetOffsetEx(%0,%1) %0 = GetOffset(%1, #%0)
-
-stock int GetNetOffset(int &offset, const char[] netclass, const char[] name)
-{
-	int offset = FindSendPropInfo(netclass, name);
-	if (offset == -1) {
-		SetFailState("Unable to retrieve a network property offset \"%s::%s\"", netclass, name);
-	}
+	Assert( IsValidEdict( entity ) );
 	
-	return offset;
+	DeclarePropOf( entity, m_fEffects );
+	
+	return GetEntData( entity, m_fEffects, 4 );
 }
 
-stock int GetOffset(int &offset, const char[] classname, const char[] name)
+stock void SetEffects( int entity, int nFlags )
 {
-	int entity = CreateEntityByName(classname);
-	if (entity == -1 || !IsValidEdict(entity)) {
-		SetFailState("Unable to retrieve a property offset \"%s::%s\" - wrong classname", classname, name);
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_fEffects );
+	
+	SetEntData( entity, m_fEffects, nFlags, 4, true );
+}
+
+stock void AddEffects( int entity, int nEffects )
+{
+	SetEffects( entity, GetEffects( entity ) | nEffects );
+}
+
+stock void RemoveEffects( int entity, int nEffects )
+{
+	SetEffects( entity, GetEffects( entity ) & ~nEffects );
+}
+
+stock void ClearEffects( int entity )
+{
+	SetEffects( entity, 0 );
+}
+
+stock bool IsEffectActive( int entity, int nEffects )
+{
+	return ( GetEffects( entity ) & nEffects );
+}
+
+static int m_hEffectEntity = -2;
+stock void SetEffectEntity( int entity, int pEffectEnt )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_hEffectEntity );
+	
+	SetEntDataEnt2( entity, m_hEffectEntity, pEffectEnt );
+}
+
+stock int GetEffectEntity( int entity )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_hEffectEntity );
+	
+	return GetEntDataEnt2( entity, m_hEffectEntity );
+}
+
+//
+// Spawnflags
+//
+static int m_spawnflags = -2;
+stock void SetSpawnflags( int entity, int flags )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_spawnflags );
+	
+	SetEntData( entity, m_spawnflags, flags, 4 );
+}
+
+stock int GetSpawnflags( int entity )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_spawnflags );
+	
+	return GetEntData( entity, m_spawnflags, 4 );
+}
+
+stock void AddSpawnFlags( int entity, int nFlags )
+{
+	SetSpawnflags( GetSpawnflags( entity ) | nFlags );
+}
+
+stock void RemoveSpawnFlags( int entity, int nFlags )
+{
+	SetSpawnflags( GetSpawnflags( entity ) & ~nFlags );
+}
+
+stock void ClearSpawnFlags( int entity )
+{
+	SetSpawnflags( entity, 0 );
+}
+
+stock bool HasSpawnFlags( int entity, int nFlags )
+{
+	return ( GetSpawnflags( entity ) & nFlags );
+}
+
+//
+// Solid Type
+//
+#if !defined __thelpers_entity_included
+	#if !defined _smlib_entities_included
+enum SolidType_t
+{
+	SOLID_NONE			= 0,	// no solid model
+	SOLID_BSP			= 1,	// a BSP tree
+	SOLID_BBOX			= 2,	// an AABB
+	SOLID_OBB			= 3,	// an OBB (not implemented yet)
+	SOLID_OBB_YAW		= 4,	// an OBB, constrained so that it can only yaw
+	SOLID_CUSTOM		= 5,	// Always call into the entity for tests
+	SOLID_VPHYSICS		= 6,	// solid vphysics object, get vcollide from the model and collide with that
+	SOLID_LAST,
+};
+	#endif
+#endif
+
+static int m_nSolidType = -2;
+stock void SetSolid( int entity, SolidType_t type = SOLID_NONE )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_nSolidType );
+	
+	SetEntData( entity, m_nSolidType, view_as< int >( type ), 1, true );
+}
+
+stock SolidType_t GetSolid( int entity )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_nSolidType );
+	
+	return view_as< SolidType_t >( GetEntData( entity, m_nSolidType, 1 ) );
+}
+
+//
+// Move Collide
+//
+enum MoveCollide_t
+{
+	MOVECOLLIDE_DEFAULT = 0,
+
+	// These ones only work for MOVETYPE_FLY + MOVETYPE_FLYGRAVITY
+	MOVECOLLIDE_FLY_BOUNCE,	// bounces, reflects, based on elasticity of surface and object - applies friction (adjust velocity)
+	MOVECOLLIDE_FLY_CUSTOM,	// Touch() will modify the velocity however it likes
+	MOVECOLLIDE_FLY_SLIDE,  // slides along surfaces (no bounce) - applies friciton (adjusts velocity)
+
+	MOVECOLLIDE_COUNT,		// Number of different movecollides
+
+	// When adding new movecollide types, make sure this is correct
+	MOVECOLLIDE_MAX_BITS = 3
+};
+
+static int m_MoveCollide = -2;
+stock void SetMoveCollide( int entity, MoveCollide_t type = MOVECOLLIDE_DEFAULT )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_MoveCollide );
+	
+	SetEntData( entity, m_MoveCollide, view_as< int >( type ), 1, true );
+}
+
+stock MoveCollide_t GetMoveCollide( int entity )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_MoveCollide );
+	
+	return view_as< MoveCollide_t >( GetEntData( entity, m_MoveCollide, 1 ) );
+}
+
+//
+// Collision Group
+//
+#if !defined _smlib_entities_included
+enum Collision_Group_t
+{
+	COLLISION_GROUP_NONE  = 0,
+	COLLISION_GROUP_DEBRIS,			// Collides with nothing but world and static stuff
+	COLLISION_GROUP_DEBRIS_TRIGGER, // Same as debris, but hits triggers
+	COLLISION_GROUP_INTERACTIVE_DEBRIS,	// Collides with everything except other interactive debris or debris
+	COLLISION_GROUP_INTERACTIVE,	// Collides with everything except interactive debris or debris
+	COLLISION_GROUP_PLAYER,
+	COLLISION_GROUP_BREAKABLE_GLASS,
+	COLLISION_GROUP_VEHICLE,
+	COLLISION_GROUP_PLAYER_MOVEMENT,  // For HL2, same as Collision_Group_Player, for
+										// TF2, this filters out other players and CBaseObjects
+	COLLISION_GROUP_NPC,			// Generic NPC group
+	COLLISION_GROUP_IN_VEHICLE,		// for any entity inside a vehicle
+	COLLISION_GROUP_WEAPON,			// for any weapons that need collision detection
+	COLLISION_GROUP_VEHICLE_CLIP,	// vehicle clip brush to restrict vehicle movement
+	COLLISION_GROUP_PROJECTILE,		// Projectiles!
+	COLLISION_GROUP_DOOR_BLOCKER,	// Blocks entities not permitted to get near moving doors
+	COLLISION_GROUP_PASSABLE_DOOR,	// Doors that the player shouldn't collide with
+	COLLISION_GROUP_DISSOLVING,		// Things that are dissolving are in this group
+	COLLISION_GROUP_PUSHAWAY,		// Nonsolid on client and server, pushaway in player code
+
+	COLLISION_GROUP_NPC_ACTOR,		// Used so NPCs in scripts ignore the player.
+	COLLISION_GROUP_NPC_SCRIPTED,	// USed for NPCs in scripts that should not collide with each other
+
+	LAST_SHARED_COLLISION_GROUP
+};
+#endif
+
+static int m_CollisionGroup = -2;
+stock void SetCollisionGroup( int entity, Collision_Group_t group = COLLISION_GROUP_NONE )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_CollisionGroup );
+	
+	SetEntData( entity, m_CollisionGroup, view_as< int >( group ), 4, true );
+}
+
+stock Collision_Group_t GetCollisionGroup( int entity )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_CollisionGroup );
+	
+	return view_as< Collision_Group_t >( GetEntData( entity, m_CollisionGroup, 4 ) );
+}
+
+//
+// Solid Flags
+//
+#if !defined __thelpers_entity_included
+	#if !defined _smlib_entities_included
+enum SolidFlags_t
+{
+	FSOLID_CUSTOMRAYTEST		= 0x0001,	// Ignore solid type + always call into the entity for ray tests
+	FSOLID_CUSTOMBOXTEST		= 0x0002,	// Ignore solid type + always call into the entity for swept box tests
+	FSOLID_NOT_SOLID			= 0x0004,	// Are we currently not solid?
+	FSOLID_TRIGGER				= 0x0008,	// This is something may be collideable but fires touch functions
+											// even when it's not collideable (when the FSOLID_NOT_SOLID flag is set)
+	FSOLID_NOT_STANDABLE		= 0x0010,	// You can't stand on this
+	FSOLID_VOLUME_CONTENTS		= 0x0020,	// Contains volumetric contents (like water)
+	FSOLID_FORCE_WORLD_ALIGNED	= 0x0040,	// Forces the collision rep to be world-aligned even if it's SOLID_BSP or SOLID_VPHYSICS
+	FSOLID_USE_TRIGGER_BOUNDS	= 0x0080,	// Uses a special trigger bounds separate from the normal OBB
+	FSOLID_ROOT_PARENT_ALIGNED	= 0x0100,	// Collisions are defined in root parent's local coordinate space
+	FSOLID_TRIGGER_TOUCH_DEBRIS	= 0x0200,	// This trigger will touch debris objects
+
+	FSOLID_MAX_BITS	= 10
+};
+	#endif
+#endif
+
+static int m_usSolidFlags = -2;
+stock void SetSolidFlags( int entity, SolidFlags_t flags )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_usSolidFlags );
+	
+	SetEntData( entity, m_usSolidFlags, flags, 2, true );
+}
+
+stock SolidFlags_t GetSolidFlags( int entity )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_usSolidFlags );
+	
+	return view_as< SolidFlags_t >( GetEntData( entity, m_usSolidFlags, 4 ) );
+}
+
+stock void ClearSolidFlags( int entity )
+{
+	SetSolidFlags( entity, 0 );
+}
+
+stock void RemoveSolidFlags( int entity, int flags )
+{
+	SetSolidFlags( entity, GetSolidFlags( entity ) & ~flags );
+}
+
+stock void AddSolidFlags( int entity, int flags )
+{
+	SetSolidFlags( entity, GetSolidFlags( entity ) | flags );
+}
+
+stock bool IsSolid( int entity )
+{
+	return ( GetSolid( entity ) != SOLID_NONE ) && ( ~GetSolidFlags( entity ) & FSOLID_NOT_SOLID );
+}
+
+stock bool IsBoundsDefinedInEntitySpace( int entity )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	SolidType_t type = GetSolid( entity );
+	
+	return ( !IsSolidFlagSet( entity, FSOLID_FORCE_WORLD_ALIGNED ) ) &&
+		( type != SOLID_BBOX ) && ( type != SOLID_NONE );
+}
+
+static int m_vecOrigin = -2;
+stock void GetLocalOrigin( int entity, float vec[ 3 ] )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_vecOrigin );
+	
+	GetEntDataVector( entity, m_vecOrigin, vec );
+}
+
+public void SetLocalOrigin( int entity, const float vec[ 3 ] )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_vecOrigin );
+	
+	SetEntDataVector( entity, m_vecOrigin, vec, true );
+}
+
+static int m_angRotation = -2;
+public void GetLocalAngles( int entity, float ang[ 3 ] )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_angRotation );
+	
+	GetEntDataVector( entity, m_angRotation, ang );
+}
+
+public void SetLocalAngles( int entity, const float ang[ 3 ] )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_angRotation );
+	
+	SetEntDataVector( entity, m_angRotation, ang, true );
+}
+
+static int m_vecAbsOrigin = -2;
+public void GetAbsOrigin( int entity, float vec[ 3 ] )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_vecAbsOrigin );
+	
+	GetEntDataVector( entity, m_vecAbsOrigin, vec );
+}
+
+public void SetAbsOrigin( int entity, const float vec[ 3 ] )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_vecAbsOrigin );
+	
+	SetEntDataVector( entity, m_vecAbsOrigin, vec );
+}
+
+static int m_angAbsRotation = -2;
+public void GetAbsAngles( int entity, float ang[ 3 ] )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_angAbsRotation );
+	
+	GetEntDataVector( entity, m_angAbsRotation, ang );
+}
+
+public void SetAbsAngles( int entity, const float ang[ 3 ] )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_vecAbsOrigin );
+	
+	SetEntDataVector( entity, m_vecAbsOrigin, ang );
+}
+
+static int m_vecVelocity = -2;
+public void GetLocalVelocity( int entity, float vel[ 3 ] )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_vecVelocity );
+	
+	GetEntDataVector( entity, m_vecVelocity, vel );
+}
+
+public void SetLocalVelocity( int entity, const float vel[ 3 ] )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_vecVelocity );
+	
+	SetEntDataVector( entity, m_vecVelocity, vel );
+}
+
+static int m_vecAbsVelocity = -2;
+public void GetAbsVelocity( int entity, float vel[ 3 ] )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_vecAbsVelocity );
+	
+	GetEntDataVector( entity, m_vecAbsVelocity, vel );
+}
+
+public void SetAbsVelocity( int entity, const float vel[ 3 ] )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_vecAbsVelocity );
+	
+	SetEntDataVector( entity, m_vecAbsVelocity, vel );
+}
+
+static int m_vecBaseVelocity = -2;
+public void GetBaseVelocity( int entity, float vel[ 3 ] )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_vecBaseVelocity );
+	
+	GetEntDataVector( entity, m_vecBaseVelocity, vel );
+}
+
+public void SetBaseVelocity( int entity, const float vel[ 3 ] )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_vecBaseVelocity );
+	
+	SetEntDataVector( entity, m_vecBaseVelocity, vel );
+}
+
+static int m_vecMins = -2;
+stock void GetMins( int entity, float vec[3] )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_vecMins );
+	
+	GetEntDataVector( entity, m_vecMins, vec );
+}
+
+static int m_vecMaxs = -2;
+stock void GetMaxs( int entity, float vec[3] )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_vecMaxs );
+	
+	GetEntDataVector( entity, m_vecMaxs, vec );
+}
+
+stock void SetMins( int entity, float back, float left, float down )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_vecMins );
+	
+	static float vec[3];
+	vec[0] = back;
+	vec[1] = left;
+	vec[2] = down;
+	SetEntDataVector( entity, m_vecMins, vec, true );
+}
+
+stock void SetMaxs( int entity, float fwd, float right, float up )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_vecMaxs );
+	
+	static float vec[3];
+	vec[0] = fwd;
+	vec[1] = right;
+	vec[2] = up;
+	SetEntDataVector( entity, m_vecMaxs, vec, true );
+}
+
+stock void SetSize( int entity, const float[3] mins, const float[3] maxs )
+{
+	for (int i = 0; i < 3; i++) {
+		Assert( mins[i] < maxs[i] );
+	}
+	
+	SetMins( entity, mins[0], mins[1], mins[2] );
+	SetMaxs( entity, maxs[0], maxs[1], maxs[2] );
+	
+	AddEFlags( entity, EFL_DIRTY_SURROUNDING_COLLISION_BOUNDS );
+}
+
+static int m_iHammerID = -2;
+stock int GetHammerID( int entity )
+{
+	DeclarePropOf( entity, m_iHammerID );
+	
+	return GetEntData( entity, m_iHammerID, 4 );
+}
+
+//
+// Time, intervals
+//
+#define TICK_INTERVAL ( GetTickInterval() )
+#if !defined _smlib_general_included
+	#define TIME_TO_TICKS(%1)		view_as< int >( 0.5 + view_as< float >( %1 ) / TICK_INTERVAL )
+	#define TICKS_TO_TIME(%1)		( TICK_INTERVAL * ( %1 ) )
+	#define ROUND_TO_TICKS(%1)	( TICK_INTERVAL * TIME_TO_TICKS( %1 ) )
+#endif
+#define TICK_NEVER_THINK		( -1 )
+
+static int m_nNextThinkTick = -2;
+stock void SetNextThink( int entity, float flTime = -1.0 )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_nNextThinkTick );
+	
+	if ( flTime == -1.0 ) {
+		SetEntData( entity, m_nNextThinkTick, TICK_NEVER_THINK );
 		
 		return;
 	}
 	
-	int offset = FindDataMapInfo(entity, name);
-	RemoveEdict(entity);
+	SetEntData( entity, m_nNextThinkTick, TIME_TO_TICKS( flTime ), 4, true );
+}
+
+stock void StopThink( int entity )
+{
+	SetNextThink( entity, -1.0 );
 	
-	if (offset == -1) {
-		SetFailState("Unable to retrieve a property offset \"%s::%s\"", classname, name);
-	}
+	AddEFlags( entity, EFL_NO_THINK_FUNCTION );
+}
+
+static int m_flFriction = -2;
+stock void SetFriction( int entity, float friction )
+{
+	Assert( IsValidEdict( entity ) );
 	
-	return offset;
-}
-
-stock void AddFlags(int entity, int flags)
-{
-	SetEntProp(entity, Prop_Data, "m_iEFlags", GetEntProp(entity, Prop_Data, "m_iEFlags") | flags);
-}
-
-stock void RemoveFlags(int entity, int flags)
-{
-	SetEntProp(entity, Prop_Data, "m_iEFlags", GetEntProp(entity, Prop_Data, "m_iEFlags") & ~flags);
-}
-
-stock int GetFlags(int entity)
-{
-	return GetEntProp(entity, Prop_Data, "m_iEFlags");
-}
-
-stock void AddEffects(int entity, int flags)
-{
-	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") | flags);
-}
-
-stock void RemoveEffects(int entity, int flags)
-{
-	SetEntProp(entity, Prop_Send, "m_fEffects", GetEntProp(entity, Prop_Send, "m_fEffects") & ~flags);
-}
-
-stock void SetSolid(int entity, SolidType_t type = SOLID_NONE)
-{
-	SetEntProp(entity, Prop_Data, "m_nSolidType", type);
-}
-
-stock void SetSolidFlags(int entity, int flags = 0)
-{
-	SetEntProp(entity, Prop_Data, "m_usSolidFlags", flags);
-}
-
-stock void GetMins(int entity, float vec[3])
-{
-	GetEntPropVector(entity, Prop_Data, "m_vecMins", vec);
-}
-
-stock void GetMaxs(int entity, float vec[3])
-{
-	GetEntPropVector(entity, Prop_Data, "m_vecMaxs", vec);
-}
-
-stock void SetMins(int entity, float back, float left, float down)
-{
-	float vec[3];
-	vec[0] = back;
-	vec[1] = left;
-	vec[2] = down;
-	SetEntPropVector(entity, Prop_Data, "m_vecMins", vec);
-}
-
-stock void SetMaxs(int entity, float fwd, float right, float up)
-{
-	float vec[3];
-	vec[0] = fwd;
-	vec[1] = right;
-	vec[2] = up;
-	SetEntPropVector(entity, Prop_Data, "m_vecMaxs", vec);
-}
-
-stock void StopThink(int entity)
-{
-	SetEntProp(entity, Prop_Data, "m_nNextThinkTick", -1);
-	AddFlags(entity, EFL_NO_THINK_FUNCTION);
-}
-
-stock bool IsClassedAs(int entity, const char[] classname)
-{
-	char buffer[128];
-	GetEntityClassname(entity, buffer, sizeof(buffer));
+	DeclarePropOf( entity, m_flFriction );
 	
-	return !strcmp(classname, buffer);
+	SetEntDataFloat( entity, m_flFriction, friction );
 }
 
-stock bool IsNamedAs(int entity, const char[] name)
+stock bool IsClassedAs( int entity, const char[] classname )
 {
-	char buffer[128];
-	GetTargetname(entity, buffer, sizeof(buffer));
+	static char buffer[128];
+	GetEntityClassname( entity, buffer, sizeof( buffer ) );
 	
-	return !strcmp(name, buffer);
+	return !strcmp( classname, buffer );
 }
 
-stock void SetSpawnflags(int entity, int flags)
+stock bool IsNamedAs( int entity, const char[] name )
 {
-	SetEntProp(entity, Prop_Data, "m_spawnflags", flags);
+	static char buffer[128];
+	GetTargetname( entity, buffer, sizeof( buffer ) );
+	
+	return !strcmp( name, buffer );
 }
 
-stock int SetTargetname(int entity, const char[] targetname)
+stock int GetEntityModel( int entity, char[] modelname, int length )
 {
-	return SetEntPropString(entity, Prop_Data, "m_iName", targetname);
+	Assert( IsValidEdict( entity ) );
+	
+	return GetEntPropString( entity, Prop_Data, "m_ModelName", modelname, length );
 }
 
-stock int GetTargetname(int entity, char[] targetname, int length)
+stock bool IsModelSet( int entity, const char[] name )
 {
-	return GetEntPropString(entity, Prop_Data, "m_iName", targetname, length);
+	static char buffer[128];
+	GetEntityModel( entity, buffer, sizeof( buffer ) );
+	
+	return !strcmp( name, buffer );
 }
 
-stock int GetParent(int entity)
+static int m_nModelIndex = -2;
+stock int GetModelIndex( int entity )
 {
-	return GetEntPropEnt(entity, Prop_Data, "m_pParent");
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_nModelIndex );
+	
+	return GetEntData( entity, m_nModelIndex, 2 );
 }
 
-stock void SetParent(int entity, int parent)
+stock int SetTargetname( int entity, const char[] targetname )
 {
-	SetVariantString("!activator");
-	AcceptEntityInput(entity, "SetParent", parent);
+	Assert( IsValidEdict( entity ) );
+	
+	return SetEntPropString( entity, Prop_Data, "m_iName", targetname );
 }
 
-stock void SetParentAttachment(int entity, const char[] attachment_name)
+stock int GetTargetname( int entity, char[] targetname, int length )
 {
-	SetVariantString(attachment_name);
-	AcceptEntityInput(entity, "SetParentAttachment");
+	Assert( IsValidEdict( entity ) );
+	
+	return GetEntPropString( entity, Prop_Data, "m_iName", targetname, length );
 }
 
-stock void ClearParent(int entity)
+static int m_pParent = -2;
+stock int GetParent( int entity )
 {
-	AcceptEntityInput(entity, "ClearParent");
+	Assert( IsValidEdict( entity ) );
+	
+	DeclarePropOf( entity, m_pParent );
+	
+	return GetEntDataEnt2( entity, m_pParent );
 }
 
-stock void UseEntity(int entity, int user, UseType_t type)
+stock void SetParent( int entity, int parent )
 {
-	AcceptEntityInput(entity, "Use", user, entity, view_as<int>(type));
+	Assert( IsValidEdict( entity ) );
+	
+	SetVariantString( "!activator" );
+	AcceptEntityInput( entity, "SetParent", parent );
 }
 
-stock void KillEntity(int entity)
+stock void SetParentAttachment( int entity, const char[] attachmentName, bool bMaintainOffset = false )
 {
-	AcceptEntityInput(entity, "Kill");
+	Assert( IsValidEdict( entity ) );
+	
+	SetVariantString( attachmentName );
+	AcceptEntityInput( entity, bMaintainOffset ? "SetParentAttachmentMaintainOffset" : "SetParentAttachment" );
 }
 
-stock void KillHierarchy(int entity)
+stock void ClearParent( int entity )
 {
-	AcceptEntityInput(entity, "KillHierarchy");
+	Assert( IsValidEdict( entity ) );
+	
+	AcceptEntityInput( entity, "ClearParent" );
 }
+
+stock void UseEntity( int entity, int user = NULL_ENTITY, UseType type = Use_Toggle )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	AcceptEntityInput( entity, "Use", user, entity, view_as< int >( type ) );
+}
+
+stock void EnableEntity( int entity, int activator = NULL_ENTITY )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	AcceptEntityInput( entity, "Enable", activator );
+}
+
+stock void DisableEntity( int entity )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	AcceptEntityInput( entity, "Disable" );
+}
+
+stock void KillEntity( int entity )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	AcceptEntityInput( entity, "Kill" );
+}
+
+stock void KillHierarchy( int entity )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	AcceptEntityInput( entity, "KillHierarchy" );
+}
+
+stock void AddOutput( int entity, const char[] fmt, any ... )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	static char buffer[1024];
+	VFormat( buffer, sizeof( buffer ), fmt, 3 );
+	
+	SetVariantString( buffer);
+	AcceptEntityInput( entity, "AddOutput" );
+}
+
+#define ENTITY_WORLD 0
+stock void AddEntityTimer( int entity, EntityOutput callback, float flTime = 0.0 )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	HookSingleEntityOutput( entity, "OnUser4", callback, true );
+	
+	AddOutput( entity, "OnUser3 !self:FireUser4::%0.4f:1", flTime );
+	AcceptEntityInput( entity, "FireUser3" );
+}
+
+// Inline wrapper for most used action with FindEntityByClassname
+#define LoopByClassname(%0,%1) for (int %0 = NULL_ENTITY; ( %0 = FindEntityByClassname( %0, %1 ) ) != NULL_ENTITY; )
