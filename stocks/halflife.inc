@@ -8,11 +8,7 @@
 #include <stocks/entity>
 #include <stocks/player>
 #include <stocks/property>
-
-#define TEAM_ANY				-2
-#define	TEAM_INVALID			-1
-#define TEAM_UNASSIGNED			0
-#define TEAM_SPECTATOR			1
+#include <halflife>
 
 //
 // Screen shake
