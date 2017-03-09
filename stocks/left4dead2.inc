@@ -28,9 +28,9 @@ stock L4D2_ZombieClass L4D2_GetZombieClass(int client)
 {
 	Assert(IsClient(client));
 	
-	DeclarePropOf(entity, m_zombieClass);
+	DeclareNetPropOf(entity, m_zombieClass);
 	
-	return view_as<L4D2_ZombieClass>( GetEntData(client, m_zombieClass) );
+	return view_as<L4D2_ZombieClass>( GetEntData(client, m_zombieClass, 1) );
 }
 
 #define L4D2_UPGRADEFLAG_NONE 			0
@@ -68,7 +68,7 @@ stock void L4D2_SetWeaponUpgradeBits(int weapon, int flags)
 	
 	DeclareNetPropOf(weapon, m_upgradeBitVec);
 	
-	SetEntData(weapon, m_upgradeBitVec, flags, 1, true);
+	SetEntData(weapon, m_upgradeBitVec, flags, 4, true);
 }
 
 static int m_nUpgradedPrimaryAmmoLoaded = -2;

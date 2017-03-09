@@ -14,10 +14,7 @@ stock int ExtractFirstNumber(const char[] str, int maxlength)
 	w = 0;
 	for (int i = 0; i < maxlength; i++) {
 		if (!IsCharNumeric(str[i])) {
-			if (w) {
-				break;
-			}
-			
+			if (w) break;
 			continue;
 		}
 		
@@ -36,7 +33,7 @@ stock void LowerCase(char[] str)
 	int index = strlen(str);
 	while (index --) {
 		if (IS_BETWEEN_INCL(str[index], 'A', 'Z')) {
-			str[index] += 0x20;
+			str[index] |= 0x20;
 		}
 	}
 }
@@ -46,7 +43,7 @@ stock void UpperCase(char[] str)
 	int index = strlen(str);
 	while (index --) {
 		if (IS_BETWEEN_INCL(str[index], 'a', 'z')) {
-			str[index] -= 0x20;
+			str[index] &= ~0x20;
 		}
 	}
 }
