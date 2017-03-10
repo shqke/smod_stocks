@@ -4,6 +4,7 @@
 #define _stocks_left4dead2_included
 
 #include <halflife>
+#include <stocks/player>
 
 #define TEAM_SURVIVOR			2
 #define	TEAM_INFECTED			3
@@ -28,7 +29,7 @@ stock L4D2_ZombieClass L4D2_GetZombieClass(int client)
 {
 	Assert(IsClient(client));
 	
-	DeclareNetPropOf(entity, m_zombieClass);
+	DeclareNetPropOf(client, m_zombieClass);
 	
 	return view_as<L4D2_ZombieClass>( GetEntData(client, m_zombieClass, 1) );
 }
