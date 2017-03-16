@@ -36,6 +36,8 @@ void SetPropLastAttacker(int entity, int attacker)
 	SetEntDataEnt2(entity, m_hLastAttacker, attacker);
 }
 
+// void SetPhysicsAttacker( CBasePlayer *pEntity, float flTime );
+
 int m_hPhysicsAttacker = -2;
 int GetPropPhysicsAttacker(int entity)
 {

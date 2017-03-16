@@ -112,13 +112,13 @@ stock int GetObserverTarget( int client )
 	return GetEntDataEnt2(client, m_hObserverTarget);
 }
 
-stock int SetObserverTarget( int client, int target )
+stock void SetObserverTarget( int client, int target )
 {
 	Assert(IsClient(client));
 	
 	DeclarePropOf(client, m_hObserverTarget);
 	
-	return SetEntDataEnt2(client, m_hObserverTarget, target, true);
+	SetEntDataEnt2(client, m_hObserverTarget, target, true);
 }
 
 static int m_iObserverMode = -2;

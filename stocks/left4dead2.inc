@@ -10,34 +10,34 @@
 #define	TEAM_INFECTED			3
 #define TEAM_SCRIPTEDAI			4 // Left 4 Dead 1 bots
 
-enum L4D2_ZombieClass
+enum ZombieClass
 {
-	L4D2Zombie_Invalid = 0,
-	L4D2Zombie_Smoker,
-	L4D2Zombie_Boomer,
-	L4D2Zombie_Hunter,
-	L4D2Zombie_Spitter,
-	L4D2Zombie_Jockey,
-	L4D2Zombie_Charger,
-	L4D2Zombie_Unknown1,
-	L4D2Zombie_Tank,
-	L4D2Zombie_Unknown2
+	Zombie_Invalid = 0,
+	Zombie_Smoker,
+	Zombie_Boomer,
+	Zombie_Hunter,
+	Zombie_Spitter,
+	Zombie_Jockey,
+	Zombie_Charger,
+	Zombie_Unknown1,
+	Zombie_Tank,
+	Zombie_Unknown2
 };
 
 static int m_zombieClass = -2;
-stock L4D2_ZombieClass L4D2_GetZombieClass(int client)
+stock ZombieClass GetZombieClass(int client)
 {
 	Assert(IsClient(client));
 	
 	DeclareNetPropOf(client, m_zombieClass);
 	
-	return view_as<L4D2_ZombieClass>( GetEntData(client, m_zombieClass, 1) );
+	return view_as<ZombieClass>( GetEntData(client, m_zombieClass, 1) );
 }
 
-#define L4D2_UPGRADEFLAG_NONE 			0
-#define L4D2_UPGRADEFLAG_INCENDIARY 	0x1
-#define L4D2_UPGRADEFLAG_EXPLOSIVE 		0x2
-#define L4D2_UPGRADEFLAG_LASER			0x4
+#define UPGRADEFLAG_NONE 			0
+#define UPGRADEFLAG_INCENDIARY 	0x1
+#define UPGRADEFLAG_EXPLOSIVE 		0x2
+#define UPGRADEFLAG_LASER			0x4
 
 static int m_upgradeBitVec = -2;
 /**
@@ -47,7 +47,7 @@ static int m_upgradeBitVec = -2;
  * @return				Current weapon upgrade bit flags.
  * @error				Invalid weapon.
  */
-stock int L4D2_GetWeaponUpgradeBits(int weapon)
+stock int GetWeaponUpgradeBits(int weapon)
 {
 	Assert( IsValidEdict( weapon ) );
 	
@@ -63,7 +63,7 @@ stock int L4D2_GetWeaponUpgradeBits(int weapon)
  * @noreturn
  * @error				Invalid weapon.
  */
-stock void L4D2_SetWeaponUpgradeBits(int weapon, int flags)
+stock void SetWeaponUpgradeBits(int weapon, int flags)
 {
 	Assert( IsValidEdict( weapon ) );
 	
@@ -80,7 +80,7 @@ static int m_nUpgradedPrimaryAmmoLoaded = -2;
  * @return				Currently loaded upgrade ammo in weapon
  * @error				Invalid weapon.
  */
-stock int L4D2_GetLoadedUpgradeAmmo(int weapon)
+stock int GetLoadedUpgradeAmmo(int weapon)
 {
 	Assert( IsValidEdict( weapon ) );
 	
@@ -96,11 +96,87 @@ stock int L4D2_GetLoadedUpgradeAmmo(int weapon)
  * @noreturn
  * @error				Invalid weapon.
  */
-stock void L4D2_SetLoadedUpgradeAmmo(int weapon, int amount)
+stock void SetLoadedUpgradeAmmo(int weapon, int amount)
 {
 	Assert( IsValidEdict( weapon ) );
 	
 	DeclareNetPropOf(weapon, m_nUpgradedPrimaryAmmoLoaded);
 	
 	SetEntData(weapon, m_nUpgradedPrimaryAmmoLoaded, amount, 1, true);
-}	
+}
+
+enum UseAction
+{
+	UseAction_None = 0,
+	UseAction_Invalid = 1,
+	UseAction_RevivedGetUp = 5,
+	UseAction_UseTimedButton = 0xA,
+	UseAction_UsePointScript = 0xB,
+};
+
+static int m_iCurrentUseAction = -2;
+stock UseAction GetUseAction(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_iCurrentUseAction);
+	
+	return GetEntData(client, m_iCurrentUseAction, 1);
+}
+
+stock void SetUseAction(int client, UseAction action)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_iCurrentUseAction);
+	
+	SetEntData(client, m_iCurrentUseAction, view_as<int>( action ), 1);
+}
+
+static int m_useActionOwner = -2;
+stock int GetUseActionOwner( int client )
+{
+	Assert(IsClient(client));
+	
+	DeclarePropOf(client, m_useActionOwner);
+	
+	return GetEntDataEnt2(client, m_useActionOwner);
+}
+
+stock void SetUseActionOwner( int client, int owner )
+{
+	Assert(IsClient(client));
+	
+	DeclarePropOf(client, m_useActionOwner);
+	
+	return SetEntDataEnt2(client, m_useActionOwner, owner, true);
+}
+
+static int m_useActionTarget = -2;
+stock int GetUseActionTarget( int client )
+{
+	Assert(IsClient(client));
+	
+	DeclarePropOf(client, m_useActionTarget);
+	
+	return GetEntDataEnt2(client, m_useActionTarget);
+}
+
+stock void SetUseActionTarget( int client, int target )
+{
+	Assert(IsClient(client));
+	
+	DeclarePropOf(client, m_useActionTarget);
+	
+	return SetEntDataEnt2(client, m_useActionTarget, target, true);
+}
+
+int m_itTimer = -2;
+stock bool IsPlayerBiled(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_itTimer);
+	
+	return GetEntDataFloat(player, m_itTimer + 8) != -1.0;
+}
