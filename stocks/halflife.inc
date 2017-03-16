@@ -137,6 +137,21 @@ stock void SetClientDeathTime( int client, float flTime = 0.0 )
 	SetEntDataFloat( client, m_flDeathTime, flTime, true );
 }
 
+int m_hThrower = -2;
+int GetThrower(int entity)
+{
+	DeclareNetPropOf(entity, m_hThrower);
+	
+	return GetEntDataEnt2(entity, m_hThrower);
+}
+
+void SetThrower(int entity, int client)
+{
+	DeclareNetPropOf(entity, m_hThrower);
+	
+	SetEntDataEnt2(entity, m_hThrower, client, true);
+}
+
 #define	SF_ENVEXPLOSION_NODAMAGE	0x00000001 // when set, ENV_EXPLOSION will not actually inflict damage
 #define	SF_ENVEXPLOSION_REPEATABLE	0x00000002 // can this entity be refired?
 #define SF_ENVEXPLOSION_NOFIREBALL	0x00000004 // don't draw the fireball
