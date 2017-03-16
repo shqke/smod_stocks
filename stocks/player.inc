@@ -60,8 +60,8 @@ stock void SetClientViewEntity( int client, int entity )
 
 stock void MoveToPlayer( int client, int target )
 {
-	Assert(IsClientAndAlive(client));
-	Assert(IsClientAndAlive(target));
+	Assert(IsClient(client));
+	Assert(IsClient(target));
 	
 	DeclareLocalNetProp(CBasePlayer, m_bDucking);
 	DeclareLocalNetProp(CBasePlayer, m_bDucked);
@@ -78,7 +78,7 @@ stock void MoveToPlayer( int client, int target )
 
 stock void SpawnClient( int client )
 {
-	Assert(!IsClientAndAlive(client));
+	Assert(!IsClient(client));
 	
 	DispatchSpawn(client);
 	
@@ -115,7 +115,6 @@ stock int GetObserverTarget( int client )
 stock int SetObserverTarget( int client, int target )
 {
 	Assert(IsClient(client));
-	Assert(IsValidEdict(target));
 	
 	DeclarePropOf(client, m_hObserverTarget);
 	
@@ -144,7 +143,7 @@ stock int SetObserverMode( int client, int mode = OBS_MODE_NONE )
 static int m_hUseEntity = -2;
 stock int GetUseEntity( int client )
 {
-	Assert(IsClientAndAlive(client));
+	Assert(IsClient(client));
 	
 	DeclarePropOf(client, m_hUseEntity);
 	
@@ -154,7 +153,7 @@ stock int GetUseEntity( int client )
 static int m_flFallVelocity = -2;
 stock float GetFallSpeed( int client )
 {
-	Assert(IsClientAndAlive(client));
+	Assert(IsClient(client));
 	
 	DeclarePropOf(client, m_flFallVelocity);
 	
@@ -183,7 +182,7 @@ stock void StripWeapons( int client )
 static int m_hActiveWeapon = -2;
 stock int GetActiveWeapon( int client )
 {
-	Assert(IsClientAndAlive(client));
+	Assert(IsClient(client));
 	
 	DeclarePropOf(client, m_hActiveWeapon);
 	
