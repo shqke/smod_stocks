@@ -212,7 +212,7 @@ stock int GetSurvivorJockeyAttacker(int client)
 }
 
 static int m_carryAttacker = -2;
-stock int GetSurvivorChargerAttacker(int client)
+stock int GetSurvivorCarryAttacker(int client)
 {
 	Assert(IsClient(client));
 	
