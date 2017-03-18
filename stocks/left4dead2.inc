@@ -171,12 +171,92 @@ stock void SetUseActionTarget( int client, int target )
 	return SetEntDataEnt2(client, m_useActionTarget, target, true);
 }
 
-int m_itTimer = -2;
+static int m_itTimer = -2;
 stock bool IsPlayerBiled(int client)
 {
 	Assert(IsClient(client));
 	
 	DeclareNetPropOf(client, m_itTimer);
 	
-	return GetEntDataFloat(player, m_itTimer + 8) != -1.0;
+	return GetEntDataFloat(client, m_itTimer + 8) != -1.0;
+}
+
+static int m_tongueOwner = -2;
+stock int GetSurvivorSmokerAttacker(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_tongueOwner);
+	
+	return GetEntData(client, m_tongueOwner);
+}
+
+static int m_pounceAttacker = -2;
+stock int GetSurvivorHunterAttacker(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_pounceAttacker);
+	
+	return GetEntData(client, m_pounceAttacker);
+}
+
+static int m_jockeyAttacker = -2;
+stock int GetSurvivorJockeyAttacker(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_jockeyAttacker);
+	
+	return GetEntData(client, m_jockeyAttacker);
+}
+
+static int m_carryAttacker = -2;
+stock int GetSurvivorChargerAttacker(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_carryAttacker);
+	
+	return GetEntData(client, m_carryAttacker);
+}
+
+static int m_pummelAttacker = -2;
+stock int GetSurvivorPummelAttacker(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_pummelAttacker);
+	
+	return GetEntData(client, m_pummelAttacker);	
+}
+
+static int m_isGhost = -2;
+stock bool IsClientGhost(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_isGhost);
+	
+	return GetEntData(client, m_isGhost);	
+}
+
+static int m_staggerTimer = -2;
+stock bool IsClientStaggering(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_staggerTimer);
+	
+	return GetEntDataFloat(client, m_staggerTimer) != -1;	
+}
+
+static int m_isIncapacitated = -2;
+stock bool IsClientIncapped(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_isIncapacitated);
+	
+	return GetEntDataFloat(client, m_isIncapacitated);
 }
