@@ -258,5 +258,5 @@ stock bool IsClientIncapped(int client)
 	
 	DeclareNetPropOf(client, m_isIncapacitated);
 	
-	return GetEntDataFloat(client, m_isIncapacitated);
+	return GetEntData(client, m_isIncapacitated);
 }
