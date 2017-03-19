@@ -76,15 +76,15 @@ stock int GetGroundEntity( int entity )
 	return GetEntDataEnt2(entity, m_hGroundEntity);
 }
 
-stock void SetGroundEntity( int entity, int other )
+stock void SetGroundEntity( int entity, int groundent = NULL_ENTITY )
 {
 	Assert( IsValidEdict( entity ) );
 	
 	DeclarePropOf(entity, m_hGroundEntity);
 	
-	SetEntDataEnt2(entity, m_hGroundEntity, other);
+	SetEntDataEnt2(entity, m_hGroundEntity, groundent, true);
 	
-	if (IsValidEdict(other)) SetEntityFlags(entity, GetEntityFlags(entity) | FL_ONGROUND);
+	SetEntityFlags(entity, ( GetEntityFlags(entity) & ~( FL_ONGROUND ) ) | ( IsValidEdict(groundent) << FL_ONGROUND ));
 }
 
 enum
@@ -106,22 +106,22 @@ stock int GetWaterLevel( int entity )
 }
 
 static int m_iMaxHealth = -2;
-stock void SetMaxHealth( int entity, int amt )
-{
-	Assert( IsValidEdict( entity ) );
-	
-	DeclarePropOf( entity, m_iMaxHealth );
-	
-	SetEntData( entity, m_iMaxHealth, amt, 4, true );
-}
-
 stock int GetMaxHealth( int entity )
 {
 	Assert( IsValidEdict( entity ) );
 	
-	DeclarePropOf( entity, m_iMaxHealth );
+	DeclareNetPropOf( entity, m_iMaxHealth );
 	
 	return GetEntData( entity, m_iMaxHealth, 4 );
+}
+
+stock void SetMaxHealth( int entity, int amt )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclareNetPropOf( entity, m_iMaxHealth );
+	
+	SetEntData( entity, m_iMaxHealth, amt, 4, true );
 }
 
 static int m_iHealth = -2;
@@ -129,7 +129,7 @@ stock int GetHealth( int entity )
 {
 	Assert( IsValidEdict( entity ) );
 	
-	DeclarePropOf( entity, m_iHealth );
+	DeclareNetPropOf( entity, m_iHealth );
 	
 	return GetEntData( entity, m_iHealth, 4 );
 }
@@ -142,9 +142,18 @@ stock int GetHealth( int entity )
 #endif
 
 static int m_takedamage = -2;
+stock int GetTakeDamage( int entity )
+{
+	Assert( IsValidEntity( entity ) );
+	
+	DeclarePropOf( entity, m_takedamage );
+	
+	return GetEntData( entity, m_takedamage, 1 );
+}
+
 stock void SetTakeDamage( int entity, int value )
 {
-	Assert( IsValidEdict( entity ) );
+	Assert( IsValidEntity( entity ) );
 	
 	DeclarePropOf( entity, m_takedamage );
 	
