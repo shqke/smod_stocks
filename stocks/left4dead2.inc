@@ -4,8 +4,9 @@
 #define _stocks_left4dead2_included
 
 #include <halflife>
-#include <stocks/player>
+//#include <stocks/player>
 
+#define TEAM_SPECTATOR			1
 #define TEAM_SURVIVOR			2
 #define	TEAM_INFECTED			3
 #define TEAM_SCRIPTEDAI			4 // Left 4 Dead 1 bots
@@ -231,8 +232,14 @@ stock int GetSurvivorPummelAttacker(int client)
 	return GetEntDataEnt2(client, m_pummelAttacker);	
 }
 
+stock bool HasSurvivorAnyAttacker(int client)
+{
+	return (GetSurvivorSmokerAttacker(client) > 0 || GetSurvivorHunterAttacker(client) > 0 || GetSurvivorJockeyAttacker(client) > 0 ||
+		GetSurvivorCarryAttacker(client) > 0 || GetSurvivorPummelAttacker(client) > 0);
+}
+
 static int m_isGhost = -2;
-stock bool IsClientGhost(int client)
+stock bool IsPlayerGhost(int client)
 {
 	Assert(IsClient(client));
 	
@@ -242,7 +249,7 @@ stock bool IsClientGhost(int client)
 }
 
 static int m_staggerTimer = -2;
-stock bool IsClientStaggering(int client)
+stock bool IsPlayerStaggering(int client)
 {
 	Assert(IsClient(client));
 	
@@ -252,11 +259,39 @@ stock bool IsClientStaggering(int client)
 }
 
 static int m_isIncapacitated = -2;
-stock bool IsClientIncapacitated(int client)
+stock bool IsPlayerIncapacitated(int client)
 {
 	Assert(IsClient(client));
 	
 	DeclareNetPropOf(client, m_isIncapacitated);
 	
 	return !!GetEntData(client, m_isIncapacitated, 1);
+}
+
+stock bool IsPlayerInfected(int client)
+{
+	Assert(IsClient(client));
+	
+	return GetClientTeam(client) == TEAM_INFECTED;
+}
+
+stock bool IsPlayerSurvivor(int client)
+{
+	Assert(IsClient(client));
+	
+	return GetClientTeam(client) == TEAM_SURVIVOR;
+}
+
+static int m_pendingTankPlayerIndex = -2;
+stock int GetPendingTankPlayerIndex()
+{
+	int entity = FindEntityByClassname(-1, "terror_player_manager");
+	
+	if (entity == -1) {
+		return entity;
+	}
+	
+	DeclareNetPropOf(entity, m_pendingTankPlayerIndex);
+	
+	return GetEntData(entity, m_pendingTankPlayerIndex);
 }
