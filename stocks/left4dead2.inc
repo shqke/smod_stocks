@@ -4,7 +4,7 @@
 #define _stocks_left4dead2_included
 
 #include <halflife>
-//#include <stocks/player>
+#include <stocks/player>
 
 #define TEAM_SPECTATOR			1
 #define TEAM_SURVIVOR			2
