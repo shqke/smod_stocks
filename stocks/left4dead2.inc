@@ -268,20 +268,6 @@ stock bool IsPlayerIncapacitated(int client)
 	return !!GetEntData(client, m_isIncapacitated, 1);
 }
 
-stock bool IsPlayerInfected(int client)
-{
-	Assert(IsClient(client));
-	
-	return GetClientTeam(client) == TEAM_INFECTED;
-}
-
-stock bool IsPlayerSurvivor(int client)
-{
-	Assert(IsClient(client));
-	
-	return GetClientTeam(client) == TEAM_SURVIVOR;
-}
-
 static int m_pendingTankPlayerIndex = -2;
 stock int GetPendingTankPlayerIndex()
 {
