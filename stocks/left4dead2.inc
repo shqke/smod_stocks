@@ -188,7 +188,7 @@ stock int GetSurvivorSmokerAttacker(int client)
 	
 	DeclareNetPropOf(client, m_tongueOwner);
 	
-	return GetEntData(client, m_tongueOwner);
+	return GetEntDataEnt2(client, m_tongueOwner);
 }
 
 static int m_pounceAttacker = -2;
@@ -198,7 +198,7 @@ stock int GetSurvivorHunterAttacker(int client)
 	
 	DeclareNetPropOf(client, m_pounceAttacker);
 	
-	return GetEntData(client, m_pounceAttacker);
+	return GetEntDataEnt2(client, m_pounceAttacker);
 }
 
 static int m_jockeyAttacker = -2;
@@ -208,7 +208,7 @@ stock int GetSurvivorJockeyAttacker(int client)
 	
 	DeclareNetPropOf(client, m_jockeyAttacker);
 	
-	return GetEntData(client, m_jockeyAttacker);
+	return GetEntDataEnt2(client, m_jockeyAttacker);
 }
 
 static int m_carryAttacker = -2;
@@ -218,7 +218,7 @@ stock int GetSurvivorCarryAttacker(int client)
 	
 	DeclareNetPropOf(client, m_carryAttacker);
 	
-	return GetEntData(client, m_carryAttacker);
+	return GetEntDataEnt2(client, m_carryAttacker);
 }
 
 static int m_pummelAttacker = -2;
@@ -228,7 +228,7 @@ stock int GetSurvivorPummelAttacker(int client)
 	
 	DeclareNetPropOf(client, m_pummelAttacker);
 	
-	return GetEntData(client, m_pummelAttacker);	
+	return GetEntDataEnt2(client, m_pummelAttacker);	
 }
 
 static int m_isGhost = -2;
@@ -238,7 +238,7 @@ stock bool IsClientGhost(int client)
 	
 	DeclareNetPropOf(client, m_isGhost);
 	
-	return GetEntData(client, m_isGhost);	
+	return !!GetEntData(client, m_isGhost, 1);	
 }
 
 static int m_staggerTimer = -2;
@@ -248,7 +248,7 @@ stock bool IsClientStaggering(int client)
 	
 	DeclareNetPropOf(client, m_staggerTimer);
 	
-	return GetEntDataFloat(client, m_staggerTimer) != -1;	
+	return GetEntDataFloat(client, m_staggerTimer + 8) != -1;	
 }
 
 static int m_isIncapacitated = -2;
@@ -258,5 +258,5 @@ stock bool IsClientIncapped(int client)
 	
 	DeclareNetPropOf(client, m_isIncapacitated);
 	
-	return GetEntData(client, m_isIncapacitated);
+	return !!GetEntData(client, m_isIncapacitated, 1);
 }
