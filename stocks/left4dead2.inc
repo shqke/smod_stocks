@@ -6,6 +6,7 @@
 #include <halflife>
 #include <stocks/player>
 
+#define TEAM_SPECTATOR			1
 #define TEAM_SURVIVOR			2
 #define	TEAM_INFECTED			3
 #define TEAM_SCRIPTEDAI			4 // Left 4 Dead 1 bots
@@ -171,12 +172,112 @@ stock void SetUseActionTarget( int client, int target = INVALID_ENT_REFERENCE )
 	SetEntDataEnt2(client, m_useActionTarget, target, true);
 }
 
-int m_itTimer = -2;
+static int m_itTimer = -2;
 stock bool IsPlayerBiled(int client)
 {
 	Assert(IsClient(client));
 	
 	DeclareNetPropOf(client, m_itTimer);
 	
-	return GetEntDataFloat(player, m_itTimer + 8) != -1.0;
+	return GetEntDataFloat(client, m_itTimer + 8) != -1.0;
+}
+
+static int m_tongueOwner = -2;
+stock int GetSurvivorSmokerAttacker(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_tongueOwner);
+	
+	return GetEntDataEnt2(client, m_tongueOwner);
+}
+
+static int m_pounceAttacker = -2;
+stock int GetSurvivorHunterAttacker(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_pounceAttacker);
+	
+	return GetEntDataEnt2(client, m_pounceAttacker);
+}
+
+static int m_jockeyAttacker = -2;
+stock int GetSurvivorJockeyAttacker(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_jockeyAttacker);
+	
+	return GetEntDataEnt2(client, m_jockeyAttacker);
+}
+
+static int m_carryAttacker = -2;
+stock int GetSurvivorCarryAttacker(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_carryAttacker);
+	
+	return GetEntDataEnt2(client, m_carryAttacker);
+}
+
+static int m_pummelAttacker = -2;
+stock int GetSurvivorPummelAttacker(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_pummelAttacker);
+	
+	return GetEntDataEnt2(client, m_pummelAttacker);	
+}
+
+stock bool HasSurvivorAnyAttacker(int client)
+{
+	return (GetSurvivorSmokerAttacker(client) > 0 || GetSurvivorHunterAttacker(client) > 0 || GetSurvivorJockeyAttacker(client) > 0 ||
+		GetSurvivorCarryAttacker(client) > 0 || GetSurvivorPummelAttacker(client) > 0);
+}
+
+static int m_isGhost = -2;
+stock bool IsPlayerGhost(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_isGhost);
+	
+	return !!GetEntData(client, m_isGhost, 1);	
+}
+
+static int m_staggerTimer = -2;
+stock bool IsPlayerStaggering(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_staggerTimer);
+	
+	return GetEntDataFloat(client, m_staggerTimer + 8) != -1;	
+}
+
+static int m_isIncapacitated = -2;
+stock bool IsPlayerIncapacitated(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_isIncapacitated);
+	
+	return !!GetEntData(client, m_isIncapacitated, 1);
+}
+
+static int m_pendingTankPlayerIndex = -2;
+stock int GetPendingTankPlayerIndex()
+{
+	int entity = FindEntityByClassname(-1, "terror_player_manager");
+	
+	if (entity == -1) {
+		return entity;
+	}
+	
+	DeclareNetPropOf(entity, m_pendingTankPlayerIndex);
+	
+	return GetEntData(entity, m_pendingTankPlayerIndex);
 }
