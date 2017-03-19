@@ -252,7 +252,7 @@ stock bool IsClientStaggering(int client)
 }
 
 static int m_isIncapacitated = -2;
-stock bool IsClientIncapped(int client)
+stock bool IsClientIncapacitated(int client)
 {
 	Assert(IsClient(client));
 	
