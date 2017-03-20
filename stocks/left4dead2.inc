@@ -105,26 +105,26 @@ stock void SetLoadedUpgradeAmmo(int weapon, int amount)
 	SetEntData(weapon, m_nUpgradedPrimaryAmmoLoaded, amount, 1, true);
 }
 
-enum BackpackItemActionType
+enum UseAction
 {
 	UseAction_None = 0,
-	UseAction_Healing = 1,
+	UseAction_Invalid = 1,
 	UseAction_RevivedGetUp = 5,
 	UseAction_UseTimedButton = 0xA,
 	UseAction_UsePointScript = 0xB,
 };
 
 static int m_iCurrentUseAction = -2;
-stock BackpackItemActionType GetUseAction(int client)
+stock UseAction GetUseAction(int client)
 {
 	Assert(IsClient(client));
 	
 	DeclareNetPropOf(client, m_iCurrentUseAction);
 	
-	return view_as<BackpackItemActionType>( GetEntData(client, m_iCurrentUseAction, 1) );
+	return GetEntData(client, m_iCurrentUseAction, 1);
 }
 
-stock void SetUseAction(int client, BackpackItemActionType action)
+stock void SetUseAction(int client, UseAction action)
 {
 	Assert(IsClient(client));
 	
@@ -138,18 +138,18 @@ stock int GetUseActionOwner( int client )
 {
 	Assert(IsClient(client));
 	
-	DeclareNetPropOf(client, m_useActionOwner);
+	DeclarePropOf(client, m_useActionOwner);
 	
 	return GetEntDataEnt2(client, m_useActionOwner);
 }
 
-stock void SetUseActionOwner( int client, int owner = INVALID_ENT_REFERENCE )
+stock void SetUseActionOwner( int client, int owner )
 {
 	Assert(IsClient(client));
 	
-	DeclareNetPropOf(client, m_useActionOwner);
+	DeclarePropOf(client, m_useActionOwner);
 	
-	SetEntDataEnt2(client, m_useActionOwner, owner, true);
+	return SetEntDataEnt2(client, m_useActionOwner, owner, true);
 }
 
 static int m_useActionTarget = -2;
@@ -157,18 +157,18 @@ stock int GetUseActionTarget( int client )
 {
 	Assert(IsClient(client));
 	
-	DeclareNetPropOf(client, m_useActionTarget);
+	DeclarePropOf(client, m_useActionTarget);
 	
 	return GetEntDataEnt2(client, m_useActionTarget);
 }
 
-stock void SetUseActionTarget( int client, int target = INVALID_ENT_REFERENCE )
+stock void SetUseActionTarget( int client, int target )
 {
 	Assert(IsClient(client));
 	
-	DeclareNetPropOf(client, m_useActionTarget);
+	DeclarePropOf(client, m_useActionTarget);
 	
-	SetEntDataEnt2(client, m_useActionTarget, target, true);
+	return SetEntDataEnt2(client, m_useActionTarget, target, true);
 }
 
 int m_itTimer = -2;

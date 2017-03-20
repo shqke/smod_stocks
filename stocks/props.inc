@@ -6,7 +6,6 @@
 #include <stocks/entity>
 #include <stocks/player>
 
-// This is NOT for CBreakable
 int m_hBreaker = -2;
 int GetPropBreaker(int entity)
 {
