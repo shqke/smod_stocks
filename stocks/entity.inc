@@ -76,15 +76,15 @@ stock int GetGroundEntity( int entity )
 	return GetEntDataEnt2(entity, m_hGroundEntity);
 }
 
-stock void SetGroundEntity( int entity, int groundent = NULL_ENTITY )
+stock void SetGroundEntity( int entity, int other )
 {
 	Assert( IsValidEdict( entity ) );
 	
 	DeclarePropOf(entity, m_hGroundEntity);
 	
-	SetEntDataEnt2(entity, m_hGroundEntity, groundent, true);
+	SetEntDataEnt2(entity, m_hGroundEntity, other);
 	
-	SetEntityFlags(entity, ( GetEntityFlags(entity) & ~( FL_ONGROUND ) ) | ( IsValidEdict(groundent) << FL_ONGROUND ));
+	if (IsValidEdict(other)) SetEntityFlags(entity, GetEntityFlags(entity) | FL_ONGROUND);
 }
 
 enum
@@ -106,15 +106,6 @@ stock int GetWaterLevel( int entity )
 }
 
 static int m_iMaxHealth = -2;
-stock int GetMaxHealth( int entity )
-{
-	Assert( IsValidEdict( entity ) );
-	
-	DeclareNetPropOf( entity, m_iMaxHealth );
-	
-	return GetEntData( entity, m_iMaxHealth, 4 );
-}
-
 stock void SetMaxHealth( int entity, int amt )
 {
 	Assert( IsValidEdict( entity ) );
@@ -122,6 +113,15 @@ stock void SetMaxHealth( int entity, int amt )
 	DeclareNetPropOf( entity, m_iMaxHealth );
 	
 	SetEntData( entity, m_iMaxHealth, amt, 4, true );
+}
+
+stock int GetMaxHealth( int entity )
+{
+	Assert( IsValidEdict( entity ) );
+	
+	DeclareNetPropOf( entity, m_iMaxHealth );
+	
+	return GetEntData( entity, m_iMaxHealth, 4 );
 }
 
 static int m_iHealth = -2;
@@ -142,18 +142,9 @@ stock int GetHealth( int entity )
 #endif
 
 static int m_takedamage = -2;
-stock int GetTakeDamage( int entity )
-{
-	Assert( IsValidEntity( entity ) );
-	
-	DeclarePropOf( entity, m_takedamage );
-	
-	return GetEntData( entity, m_takedamage, 1 );
-}
-
 stock void SetTakeDamage( int entity, int value )
 {
-	Assert( IsValidEntity( entity ) );
+	Assert( IsValidEdict( entity ) );
 	
 	DeclarePropOf( entity, m_takedamage );
 	
