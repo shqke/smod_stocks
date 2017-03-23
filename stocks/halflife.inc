@@ -10,6 +10,8 @@
 #include <stocks/property>
 #include <halflife>
 
+#define TEAM_SPECTATOR			1
+
 //
 // Screen shake
 //
@@ -181,82 +183,18 @@ stock void CreateExplosionEx( const float[3] center, const float[3] angles, int 
 		SetEntProp(explosion, Prop_Data, "m_iMagnitude", magnitude);
 		SetEntProp(explosion, Prop_Data, "m_iRadiusOverride", radius);
 		
-		// SetEntProp(explosion, Prop_Data, "m_iTeamNum", GetClientTeam(owner));
 		SetEntPropEnt(explosion, Prop_Data, "m_hOwnerEntity", owner);
 
 		DispatchSpawn(explosion);
 		TeleportEntity(explosion, center, NULL_VECTOR, NULL_VECTOR);
 		
 		RequestFrame(TriggerExplosion, explosion);
-		
-		PrintToServer("m_sFireballSprite = %d", GetEntProp(explosion, Prop_Data, "m_sFireballSprite"));
-		
-		// SetEntProp(explosion, Prop_Data, "m_sFireballSprite", modelExplode, 2);
-		// SetEntProp(explosion, Prop_Data, "m_spriteScale", 1, 4);
 	}
-	
-	// static int explosion;
-	// explosion = CreateEntityAt("env_explosion", center, angles);
-	// if (!IsValidEdict(explosion)) {
-		// return;
-	// }
-	
-	// if (IsValidEdict(owner)) {
-		// SetOwnerEntity(explosion, owner);
-	// }
-	
-	// DispatchSpawn(explosion);
-	
-	// DeclareLocalPropOf(explosion, m_iMagnitude);
-	// DeclareLocalPropOf(explosion, m_iRadiusOverride);
-	// DeclareLocalPropOf(explosion, m_flDamageForce);
-	
-	// // SetEntData(explosion, m_iMagnitude, magnitude, 4, true);
-	// // if (radius) {
-		// // SetEntData(explosion, m_iRadiusOverride, radius, 4, true);
-	// // }
-	
-	// // if (flExplosionForce != 0.0) {
-		// // SetEntDataFloat(explosion, m_flDamageForce, flExplosionForce, true);
-	// // }
-	// SetSpawnflags(explosion, nSpawnFlags);
-	
-	// DispatchKeyValue(explosion, "iMagnitude", "100");
-	// DispatchKeyValue(explosion, "iRadiusOverride", "200");
-	// DispatchKeyValue(explosion, "DamageForce", "0.0");
-	
-	// DispatchSpawn(explosion);
-	
-	// SetEntityRenderMode(explosion, RENDER_TRANSADD);
-	
-	// DeclareLocalPropOf(explosion, m_hInflictor);
-	// DeclareLocalPropOf(explosion, m_iCustomDamageType);
-	// DeclareLocalPropOf(explosion, m_hEntityIgnore);
-	// DeclareLocalPropOf(explosion, m_iClassIgnore);
-	
-	// if (IsValidEdict(inflictor)) {
-		// SetEntDataEnt2(explosion, m_hInflictor, inflictor);
-	// }
-	
-	// SetEntData(explosion, m_iCustomDamageType, iCustomDamageType, 4, true);
-	
-	// if (IsValidEdict(ignoredEntity)) {
-		// SetEntDataEntHandle(explosion, m_hEntityIgnore, ignoredEntity);
-	// }
-	
-	// SetEntData(explosion, m_iClassIgnore, ignoredClass, 4, true);
-	
-	// TeleportEntity(explosion, center, angles, NULL_VECTOR);
-	
-	// AcceptEntityInput(explosion, "Explode");
-	
-	// PrintToServer("exploded");
 }
 
 public void TriggerExplosion(int entity)
 {
 	AcceptEntityInput(entity, "Explode");
-	//AcceptEntityInput(entity, "Kill");
 }
 
 stock void CreateExplosionB(const float[3] center, const float[3] angles, int owner,
@@ -436,14 +374,6 @@ stock float ScaleForGravity( float desiredGravity )
 	float worldGravity = GetWorldGravity();
 	
 	return ( worldGravity > 0.0 ? ( desiredGravity / worldGravity ) : 0.0 );
-}
-
-//
-// RadiusDamage wrapper
-//
-stock int RadiusDamage()
-{
-	
 }
 
 //
