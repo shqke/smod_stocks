@@ -5,6 +5,7 @@
 
 #include <halflife>
 #include <stocks/player>
+#include <stocks/halflife>
 
 #define TEAM_SURVIVOR			2
 #define	TEAM_INFECTED			3
@@ -31,7 +32,7 @@ stock ZombieClass GetZombieClass(int client)
 	
 	DeclareNetPropOf(client, m_zombieClass);
 	
-	return view_as<ZombieClass>( GetEntData(client, m_zombieClass, 1) );
+	return view_as<ZombieClass>(GetEntData(client, m_zombieClass, 1));
 }
 
 #define UPGRADEFLAG_NONE 			0
@@ -49,7 +50,7 @@ static int m_upgradeBitVec = -2;
  */
 stock int GetWeaponUpgradeBits(int weapon)
 {
-	Assert( IsValidEdict( weapon ) );
+	Assert(IsValidEdict(weapon));
 	
 	DeclareNetPropOf(weapon, m_upgradeBitVec);
 	
@@ -65,7 +66,7 @@ stock int GetWeaponUpgradeBits(int weapon)
  */
 stock void SetWeaponUpgradeBits(int weapon, int flags)
 {
-	Assert( IsValidEdict( weapon ) );
+	Assert(IsValidEdict(weapon));
 	
 	DeclareNetPropOf(weapon, m_upgradeBitVec);
 	
@@ -82,7 +83,7 @@ static int m_nUpgradedPrimaryAmmoLoaded = -2;
  */
 stock int GetLoadedUpgradeAmmo(int weapon)
 {
-	Assert( IsValidEdict( weapon ) );
+	Assert(IsValidEdict(weapon));
 	
 	DeclareNetPropOf(weapon, m_nUpgradedPrimaryAmmoLoaded);
 	
@@ -98,43 +99,43 @@ stock int GetLoadedUpgradeAmmo(int weapon)
  */
 stock void SetLoadedUpgradeAmmo(int weapon, int amount)
 {
-	Assert( IsValidEdict( weapon ) );
+	Assert(IsValidEdict(weapon));
 	
 	DeclareNetPropOf(weapon, m_nUpgradedPrimaryAmmoLoaded);
 	
 	SetEntData(weapon, m_nUpgradedPrimaryAmmoLoaded, amount, 1, true);
 }
 
-enum UseAction
+enum BackpackItemActionType
 {
 	UseAction_None = 0,
-	UseAction_Invalid = 1,
+	UseAction_Healing = 1,
 	UseAction_RevivedGetUp = 5,
-	UseAction_UseTimedButton = 0xA,
-	UseAction_UsePointScript = 0xB,
+	UseAction_UseTimedButton = 10,
+	UseAction_UsePointScript = 11,
 };
 
 static int m_iCurrentUseAction = -2;
-stock UseAction GetUseAction(int client)
+stock BackpackItemActionType GetUseAction(int client)
 {
 	Assert(IsClient(client));
 	
 	DeclareNetPropOf(client, m_iCurrentUseAction);
 	
-	return GetEntData(client, m_iCurrentUseAction, 1);
+	return view_as<BackpackItemActionType>(GetEntData(client, m_iCurrentUseAction, 1));
 }
 
-stock void SetUseAction(int client, UseAction action)
+stock void SetUseAction(int client, BackpackItemActionType action = UseAction_None)
 {
 	Assert(IsClient(client));
 	
 	DeclareNetPropOf(client, m_iCurrentUseAction);
 	
-	SetEntData(client, m_iCurrentUseAction, view_as<int>( action ), 1);
+	SetEntData(client, m_iCurrentUseAction, view_as<int>(action), 1);
 }
 
 static int m_useActionOwner = -2;
-stock int GetUseActionOwner( int client )
+stock int GetUseActionOwner(int client)
 {
 	Assert(IsClient(client));
 	
@@ -143,7 +144,7 @@ stock int GetUseActionOwner( int client )
 	return GetEntDataEnt2(client, m_useActionOwner);
 }
 
-stock void SetUseActionOwner( int client, int owner )
+stock void SetUseActionOwner(int client, int owner = NULL_ENTITY)
 {
 	Assert(IsClient(client));
 	
@@ -153,7 +154,7 @@ stock void SetUseActionOwner( int client, int owner )
 }
 
 static int m_useActionTarget = -2;
-stock int GetUseActionTarget( int client )
+stock int GetUseActionTarget(int client)
 {
 	Assert(IsClient(client));
 	
@@ -162,7 +163,7 @@ stock int GetUseActionTarget( int client )
 	return GetEntDataEnt2(client, m_useActionTarget);
 }
 
-stock void SetUseActionTarget( int client, int target )
+stock void SetUseActionTarget(int client, int target = NULL_ENTITY)
 {
 	Assert(IsClient(client));
 	
@@ -171,12 +172,112 @@ stock void SetUseActionTarget( int client, int target )
 	return SetEntDataEnt2(client, m_useActionTarget, target, true);
 }
 
-int m_itTimer = -2;
-stock bool IsPlayerBiled(int client)
+static int m_itTimer = -2;
+stock bool IsPlayerIT(int client)
 {
 	Assert(IsClient(client));
 	
 	DeclareNetPropOf(client, m_itTimer);
 	
 	return GetEntDataFloat(player, m_itTimer + 8) != -1.0;
+}
+
+static int m_tongueOwner = -2;
+stock int GetSurvivorSmokerAttacker(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_tongueOwner);
+	
+	return GetEntDataEnt2(client, m_tongueOwner);
+}
+
+static int m_pounceAttacker = -2;
+stock int GetSurvivorHunterAttacker(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_pounceAttacker);
+	
+	return GetEntDataEnt2(client, m_pounceAttacker);
+}
+
+static int m_jockeyAttacker = -2;
+stock int GetSurvivorJockeyAttacker(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_jockeyAttacker);
+	
+	return GetEntDataEnt2(client, m_jockeyAttacker);
+}
+
+static int m_carryAttacker = -2;
+stock int GetSurvivorCarryAttacker(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_carryAttacker);
+	
+	return GetEntDataEnt2(client, m_carryAttacker);
+}
+
+static int m_pummelAttacker = -2;
+stock int GetSurvivorPummelAttacker(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_pummelAttacker);
+	
+	return GetEntDataEnt2(client, m_pummelAttacker);	
+}
+
+stock bool HasSurvivorAnyAttacker(int client)
+{
+	return (GetSurvivorSmokerAttacker(client) > 0 || GetSurvivorHunterAttacker(client) > 0 || GetSurvivorJockeyAttacker(client) > 0 ||
+		GetSurvivorCarryAttacker(client) > 0 || GetSurvivorPummelAttacker(client) > 0);
+}
+
+static int m_isGhost = -2;
+stock bool IsPlayerGhost(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_isGhost);
+	
+	return !!GetEntData(client, m_isGhost, 1);	
+}
+
+static int m_staggerTimer = -2;
+stock bool IsPlayerStaggering(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_staggerTimer);
+	
+	return GetEntDataFloat(client, m_staggerTimer + 8) != -1;	
+}
+
+static int m_isIncapacitated = -2;
+stock bool IsPlayerIncapacitated(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_isIncapacitated);
+	
+	return !!GetEntData(client, m_isIncapacitated, 1);
+}
+
+static int m_pendingTankPlayerIndex = -2;
+stock int GetPendingTankPlayerIndex()
+{
+	int entity = FindEntityByClassname(-1, "terror_player_manager");
+	
+	if (entity == -1) {
+		return entity;
+	}
+	
+	DeclareNetPropOf(entity, m_pendingTankPlayerIndex);
+	
+	return GetEntData(entity, m_pendingTankPlayerIndex);
 }
