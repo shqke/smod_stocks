@@ -125,7 +125,7 @@ stock BackpackItemActionType GetUseAction(int client)
 	return view_as<BackpackItemActionType>(GetEntData(client, m_iCurrentUseAction, 1));
 }
 
-stock void SetUseAction(int client, BackpackItemActionType action)
+stock void SetUseAction(int client, BackpackItemActionType action = UseAction_None)
 {
 	Assert(IsClient(client));
 	
@@ -144,7 +144,7 @@ stock int GetUseActionOwner(int client)
 	return GetEntDataEnt2(client, m_useActionOwner);
 }
 
-stock void SetUseActionOwner(int client, int owner)
+stock void SetUseActionOwner(int client, int owner = NULL_ENTITY)
 {
 	Assert(IsClient(client));
 	
@@ -163,7 +163,7 @@ stock int GetUseActionTarget(int client)
 	return GetEntDataEnt2(client, m_useActionTarget);
 }
 
-stock void SetUseActionTarget(int client, int target)
+stock void SetUseActionTarget(int client, int target = NULL_ENTITY)
 {
 	Assert(IsClient(client));
 	
