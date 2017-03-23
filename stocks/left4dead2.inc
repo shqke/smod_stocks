@@ -5,6 +5,7 @@
 
 #include <halflife>
 #include <stocks/player>
+#include <stocks/halflife>
 
 #define TEAM_SURVIVOR			2
 #define	TEAM_INFECTED			3
@@ -31,7 +32,7 @@ stock ZombieClass GetZombieClass(int client)
 	
 	DeclareNetPropOf(client, m_zombieClass);
 	
-	return view_as<ZombieClass>( GetEntData(client, m_zombieClass, 1) );
+	return view_as<ZombieClass>(GetEntData(client, m_zombieClass, 1));
 }
 
 #define UPGRADEFLAG_NONE 			0
@@ -49,7 +50,7 @@ static int m_upgradeBitVec = -2;
  */
 stock int GetWeaponUpgradeBits(int weapon)
 {
-	Assert( IsValidEdict( weapon ) );
+	Assert(IsValidEdict(weapon));
 	
 	DeclareNetPropOf(weapon, m_upgradeBitVec);
 	
@@ -65,7 +66,7 @@ stock int GetWeaponUpgradeBits(int weapon)
  */
 stock void SetWeaponUpgradeBits(int weapon, int flags)
 {
-	Assert( IsValidEdict( weapon ) );
+	Assert(IsValidEdict(weapon));
 	
 	DeclareNetPropOf(weapon, m_upgradeBitVec);
 	
@@ -82,7 +83,7 @@ static int m_nUpgradedPrimaryAmmoLoaded = -2;
  */
 stock int GetLoadedUpgradeAmmo(int weapon)
 {
-	Assert( IsValidEdict( weapon ) );
+	Assert(IsValidEdict(weapon));
 	
 	DeclareNetPropOf(weapon, m_nUpgradedPrimaryAmmoLoaded);
 	
@@ -98,14 +99,14 @@ stock int GetLoadedUpgradeAmmo(int weapon)
  */
 stock void SetLoadedUpgradeAmmo(int weapon, int amount)
 {
-	Assert( IsValidEdict( weapon ) );
+	Assert(IsValidEdict(weapon));
 	
 	DeclareNetPropOf(weapon, m_nUpgradedPrimaryAmmoLoaded);
 	
 	SetEntData(weapon, m_nUpgradedPrimaryAmmoLoaded, amount, 1, true);
 }
 
-enum UseAction
+enum BackpackItemActionType
 {
 	UseAction_None = 0,
 	UseAction_Healing = 1,
@@ -115,26 +116,26 @@ enum UseAction
 };
 
 static int m_iCurrentUseAction = -2;
-stock UseAction GetUseAction(int client)
+stock BackpackItemActionType GetUseAction(int client)
 {
 	Assert(IsClient(client));
 	
 	DeclareNetPropOf(client, m_iCurrentUseAction);
 	
-	return GetEntData(client, m_iCurrentUseAction, 1);
+	return view_as<BackpackItemActionType>(GetEntData(client, m_iCurrentUseAction, 1));
 }
 
-stock void SetUseAction(int client, UseAction action)
+stock void SetUseAction(int client, BackpackItemActionType action)
 {
 	Assert(IsClient(client));
 	
 	DeclareNetPropOf(client, m_iCurrentUseAction);
 	
-	SetEntData(client, m_iCurrentUseAction, view_as<int>( action ), 1);
+	SetEntData(client, m_iCurrentUseAction, view_as<int>(action), 1);
 }
 
 static int m_useActionOwner = -2;
-stock int GetUseActionOwner( int client )
+stock int GetUseActionOwner(int client)
 {
 	Assert(IsClient(client));
 	
@@ -143,7 +144,7 @@ stock int GetUseActionOwner( int client )
 	return GetEntDataEnt2(client, m_useActionOwner);
 }
 
-stock void SetUseActionOwner( int client, int owner )
+stock void SetUseActionOwner(int client, int owner)
 {
 	Assert(IsClient(client));
 	
@@ -153,7 +154,7 @@ stock void SetUseActionOwner( int client, int owner )
 }
 
 static int m_useActionTarget = -2;
-stock int GetUseActionTarget( int client )
+stock int GetUseActionTarget(int client)
 {
 	Assert(IsClient(client));
 	
@@ -162,7 +163,7 @@ stock int GetUseActionTarget( int client )
 	return GetEntDataEnt2(client, m_useActionTarget);
 }
 
-stock void SetUseActionTarget( int client, int target )
+stock void SetUseActionTarget(int client, int target)
 {
 	Assert(IsClient(client));
 	

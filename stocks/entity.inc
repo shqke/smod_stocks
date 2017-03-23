@@ -12,16 +12,16 @@
 
 #define NULL_ENTITY INVALID_ENT_REFERENCE
 
-stock int CreateEntityAt( const char[] classname, const float[3] origin = NULL_VECTOR, const float[3] angles = NULL_VECTOR, int edict = NULL_ENTITY )
+stock int CreateEntityAt(const char[] classname, const float[3] origin = NULL_VECTOR, const float[3] angles = NULL_VECTOR, int edict = NULL_ENTITY)
 {
 	static int entity;
-	if ( edict != NULL_ENTITY && IsValidEntity( edict ) ) {
+	if (edict != NULL_ENTITY && IsValidEdict(edict)) {
 		return NULL_ENTITY;
 	}
 	
 	entity = CreateEntityByName(classname, edict);
 	
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
 	TeleportEntity(entity, origin, angles, NULL_VECTOR);
 	
@@ -29,18 +29,18 @@ stock int CreateEntityAt( const char[] classname, const float[3] origin = NULL_V
 }
 
 static int m_hOwnerEntity = -2;
-stock void SetOwnerEntity( int entity, int owner )
+stock void SetOwnerEntity(int entity, int owner)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
 	DeclarePropOf(entity, m_hOwnerEntity);
 	
 	SetEntDataEnt2(entity, m_hOwnerEntity, owner);
 }
 
-stock int GetOwnerEntity( int entity )
+stock int GetOwnerEntity(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
 	DeclarePropOf(entity, m_hOwnerEntity);
 	
@@ -48,18 +48,18 @@ stock int GetOwnerEntity( int entity )
 }
 
 static int m_hOwner = -2;
-stock void SetOwner( int entity, int owner )
+stock void SetOwner(int entity, int owner)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
 	DeclarePropOf(entity, m_hOwner);
 	
 	SetEntDataEnt2(entity, m_hOwner, owner);
 }
 
-stock int GetOwner( int entity )
+stock int GetOwner(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
 	DeclarePropOf(entity, m_hOwner);
 	
@@ -67,24 +67,24 @@ stock int GetOwner( int entity )
 }
 
 static int m_hGroundEntity = -2;
-stock int GetGroundEntity( int entity )
+stock int GetGroundEntity(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
 	DeclarePropOf(entity, m_hGroundEntity);
 	
 	return GetEntDataEnt2(entity, m_hGroundEntity);
 }
 
-stock void SetGroundEntity( int entity, int other )
+stock void SetGroundEntity(int entity, int groundent = NULL_ENTITY)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
 	DeclarePropOf(entity, m_hGroundEntity);
 	
-	SetEntDataEnt2(entity, m_hGroundEntity, other);
+	SetEntDataEnt2(entity, m_hGroundEntity, groundent, true);
 	
-	if (IsValidEdict(other)) SetEntityFlags(entity, GetEntityFlags(entity) | FL_ONGROUND);
+	SetEntityFlags(entity, (GetEntityFlags(entity) & ~(FL_ONGROUND)) | (IsValidEdict(groundent) << FL_ONGROUND));
 }
 
 enum
@@ -96,42 +96,42 @@ enum
 };
 
 static int m_nWaterLevel = -2;
-stock int GetWaterLevel( int entity )
+stock int GetWaterLevel(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_nWaterLevel );
+	DeclarePropOf(entity, m_nWaterLevel);
 	
-	return GetEntData( entity, m_nWaterLevel, 1 );
+	return GetEntData(entity, m_nWaterLevel, 1);
 }
 
 static int m_iMaxHealth = -2;
-stock void SetMaxHealth( int entity, int amt )
+stock int GetMaxHealth(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclareNetPropOf( entity, m_iMaxHealth );
+	DeclarePropOf(entity, m_iMaxHealth);
 	
-	SetEntData( entity, m_iMaxHealth, amt, 4, true );
+	return GetEntData(entity, m_iMaxHealth, 4);
 }
 
-stock int GetMaxHealth( int entity )
+stock void SetMaxHealth(int entity, int amt)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclareNetPropOf( entity, m_iMaxHealth );
+	DeclarePropOf(entity, m_iMaxHealth);
 	
-	return GetEntData( entity, m_iMaxHealth, 4 );
+	SetEntData(entity, m_iMaxHealth, amt, 4, true);
 }
 
 static int m_iHealth = -2;
-stock int GetHealth( int entity )
+stock int GetHealth(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclareNetPropOf( entity, m_iHealth );
+	DeclarePropOf(entity, m_iHealth);
 	
-	return GetEntData( entity, m_iHealth, 4 );
+	return GetEntData(entity, m_iHealth, 4);
 }
 
 #if !defined _smlib_entities_included
@@ -142,13 +142,22 @@ stock int GetHealth( int entity )
 #endif
 
 static int m_takedamage = -2;
-stock void SetTakeDamage( int entity, int value )
+stock int GetTakeDamage(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_takedamage );
+	DeclarePropOf(entity, m_takedamage);
 	
-	SetEntData( entity, m_takedamage, value, 1 );
+	return GetEntData(entity, m_takedamage, 1);
+}
+
+stock void SetTakeDamage(int entity, int value)
+{
+	Assert(IsValidEdict(entity));
+	
+	DeclarePropOf(entity, m_takedamage);
+	
+	SetEntData(entity, m_takedamage, value, 1);
 }
 
 #if !defined _smlib_entities_included
@@ -208,37 +217,37 @@ enum
 #endif
 
 static int m_iEFlags = -2;
-stock int GetEFlags( int entity )
+stock int GetEFlags(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_iEFlags );
+	DeclarePropOf(entity, m_iEFlags);
 	
-	return GetEntData( entity, m_iEFlags, 4 );
+	return GetEntData(entity, m_iEFlags, 4);
 }
 
-stock void SetEFlags( int entity, int iEFlags )
+stock void SetEFlags(int entity, int iEFlags)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_iEFlags );
+	DeclarePropOf(entity, m_iEFlags);
 	
-	SetEntData( entity, m_iEFlags, iEFlags, 4 );
+	SetEntData(entity, m_iEFlags, iEFlags, 4);
 }
 
-stock void AddEFlags( int entity, int nEFlagMask )
+stock void AddEFlags(int entity, int nEFlagMask)
 {
-	SetEFlags( entity, GetEFlags( entity ) | nEFlagMask );
+	SetEFlags(entity, GetEFlags(entity) | nEFlagMask);
 }
 
-stock void RemoveEFlags( int entity, int nEFlagMask )
+stock void RemoveEFlags(int entity, int nEFlagMask)
 {
-	SetEFlags( entity, GetEFlags( entity ) & ~nEFlagMask );
+	SetEFlags(entity, GetEFlags(entity) & ~nEFlagMask);
 }
 
-stock bool IsEFlagSet( int entity, int nEFlagMask )
+stock bool IsEFlagSet(int entity, int nEFlagMask)
 {
-	return ( GetEFlags( entity ) & nEFlagMask );
+	return (GetEFlags(entity) & nEFlagMask);
 }
 
 //
@@ -264,103 +273,103 @@ enum
 };
 
 static int m_fEffects = -2;
-stock int GetEffects( int entity )
+stock int GetEffects(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_fEffects );
+	DeclarePropOf(entity, m_fEffects);
 	
-	return GetEntData( entity, m_fEffects, 4 );
+	return GetEntData(entity, m_fEffects, 4);
 }
 
-stock void SetEffects( int entity, int nFlags )
+stock void SetEffects(int entity, int nFlags)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_fEffects );
+	DeclarePropOf(entity, m_fEffects);
 	
-	SetEntData( entity, m_fEffects, nFlags, 4, true );
+	SetEntData(entity, m_fEffects, nFlags, 4, true);
 }
 
-stock void AddEffects( int entity, int nEffects )
+stock void AddEffects(int entity, int nEffects)
 {
-	SetEffects( entity, GetEffects( entity ) | nEffects );
+	SetEffects(entity, GetEffects(entity) | nEffects);
 }
 
-stock void RemoveEffects( int entity, int nEffects )
+stock void RemoveEffects(int entity, int nEffects)
 {
-	SetEffects( entity, GetEffects( entity ) & ~nEffects );
+	SetEffects(entity, GetEffects(entity) & ~nEffects);
 }
 
-stock void ClearEffects( int entity )
+stock void ClearEffects(int entity)
 {
-	SetEffects( entity, 0 );
+	SetEffects(entity, 0);
 }
 
-stock bool IsEffectActive( int entity, int nEffects )
+stock bool IsEffectActive(int entity, int nEffects)
 {
-	return ( GetEffects( entity ) & nEffects );
+	return (GetEffects(entity) & nEffects);
 }
 
 static int m_hEffectEntity = -2;
-stock void SetEffectEntity( int entity, int pEffectEnt )
+stock void SetEffectEntity(int entity, int pEffectEnt)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_hEffectEntity );
+	DeclarePropOf(entity, m_hEffectEntity);
 	
-	SetEntDataEnt2( entity, m_hEffectEntity, pEffectEnt );
+	SetEntDataEnt2(entity, m_hEffectEntity, pEffectEnt);
 }
 
-stock int GetEffectEntity( int entity )
+stock int GetEffectEntity(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_hEffectEntity );
+	DeclarePropOf(entity, m_hEffectEntity);
 	
-	return GetEntDataEnt2( entity, m_hEffectEntity );
+	return GetEntDataEnt2(entity, m_hEffectEntity);
 }
 
 //
 // Spawnflags
 //
 static int m_spawnflags = -2;
-stock void SetSpawnflags( int entity, int flags )
+stock void SetSpawnflags(int entity, int flags)
 {
-	Assert( IsValidEntity( entity ) );
+	Assert(IsValidEntity(entity));
 	
-	DeclarePropOf( entity, m_spawnflags );
+	DeclarePropOf(entity, m_spawnflags);
 	
-	SetEntData( entity, m_spawnflags, flags, 4 );
+	SetEntData(entity, m_spawnflags, flags, 4);
 }
 
-stock int GetSpawnflags( int entity )
+stock int GetSpawnflags(int entity)
 {
-	Assert( IsValidEntity( entity ) );
+	Assert(IsValidEntity(entity));
 	
-	DeclarePropOf( entity, m_spawnflags );
+	DeclarePropOf(entity, m_spawnflags);
 	
-	return GetEntData( entity, m_spawnflags, 4 );
+	return GetEntData(entity, m_spawnflags, 4);
 }
 
-stock void AddSpawnFlags( int entity, int nFlags )
+stock void AddSpawnFlags(int entity, int nFlags)
 {
-	SetSpawnflags( GetSpawnflags( entity ) | nFlags );
+	SetSpawnflags(GetSpawnflags(entity) | nFlags);
 }
 
-stock void RemoveSpawnFlags( int entity, int nFlags )
+stock void RemoveSpawnFlags(int entity, int nFlags)
 {
-	SetSpawnflags( GetSpawnflags( entity ) & ~nFlags );
+	SetSpawnflags(GetSpawnflags(entity) & ~nFlags);
 }
 
-stock void ClearSpawnFlags( int entity )
+stock void ClearSpawnFlags(int entity)
 {
-	SetSpawnflags( entity, 0 );
+	SetSpawnflags(entity, 0);
 }
 
-stock bool HasSpawnFlags( int entity, int nFlags )
+stock bool HasSpawnFlags(int entity, int nFlags)
 {
-	return ( GetSpawnflags( entity ) & nFlags );
+	return (GetSpawnflags(entity) & nFlags);
 }
 
 //
@@ -383,22 +392,22 @@ enum SolidType_t
 #endif
 
 static int m_nSolidType = -2;
-stock void SetSolid( int entity, SolidType_t type = SOLID_NONE )
+stock void SetSolid(int entity, SolidType_t type = SOLID_NONE)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_nSolidType );
+	DeclarePropOf(entity, m_nSolidType);
 	
-	SetEntData( entity, m_nSolidType, view_as< int >( type ), 1, true );
+	SetEntData(entity, m_nSolidType, view_as< int >(type), 1, true);
 }
 
-stock SolidType_t GetSolid( int entity )
+stock SolidType_t GetSolid(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_nSolidType );
+	DeclarePropOf(entity, m_nSolidType);
 	
-	return view_as< SolidType_t >( GetEntData( entity, m_nSolidType, 1 ) );
+	return view_as< SolidType_t >(GetEntData(entity, m_nSolidType, 1));
 }
 
 //
@@ -420,22 +429,22 @@ enum MoveCollide_t
 };
 
 static int m_MoveCollide = -2;
-stock void SetMoveCollide( int entity, MoveCollide_t type = MOVECOLLIDE_DEFAULT )
+stock void SetMoveCollide(int entity, MoveCollide_t type = MOVECOLLIDE_DEFAULT)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_MoveCollide );
+	DeclarePropOf(entity, m_MoveCollide);
 	
-	SetEntData( entity, m_MoveCollide, view_as< int >( type ), 1, true );
+	SetEntData(entity, m_MoveCollide, view_as< int >(type), 1, true);
 }
 
-stock MoveCollide_t GetMoveCollide( int entity )
+stock MoveCollide_t GetMoveCollide(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_MoveCollide );
+	DeclarePropOf(entity, m_MoveCollide);
 	
-	return view_as< MoveCollide_t >( GetEntData( entity, m_MoveCollide, 1 ) );
+	return view_as< MoveCollide_t >(GetEntData(entity, m_MoveCollide, 1));
 }
 
 //
@@ -472,22 +481,22 @@ enum Collision_Group_t
 #endif
 
 static int m_CollisionGroup = -2;
-stock void SetCollisionGroup( int entity, Collision_Group_t group = COLLISION_GROUP_NONE )
+stock void SetCollisionGroup(int entity, Collision_Group_t group = COLLISION_GROUP_NONE)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_CollisionGroup );
+	DeclarePropOf(entity, m_CollisionGroup);
 	
-	SetEntData( entity, m_CollisionGroup, view_as< int >( group ), 4, true );
+	SetEntData(entity, m_CollisionGroup, view_as< int >(group), 4, true);
 }
 
-stock Collision_Group_t GetCollisionGroup( int entity )
+stock Collision_Group_t GetCollisionGroup(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_CollisionGroup );
+	DeclarePropOf(entity, m_CollisionGroup);
 	
-	return view_as< Collision_Group_t >( GetEntData( entity, m_CollisionGroup, 4 ) );
+	return view_as< Collision_Group_t >(GetEntData(entity, m_CollisionGroup, 4));
 }
 
 //
@@ -515,441 +524,441 @@ enum SolidFlags_t
 #endif
 
 static int m_usSolidFlags = -2;
-stock void SetSolidFlags( int entity, SolidFlags_t flags )
+stock void SetSolidFlags(int entity, SolidFlags_t flags)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_usSolidFlags );
+	DeclarePropOf(entity, m_usSolidFlags);
 	
-	SetEntData( entity, m_usSolidFlags, flags, 2, true );
+	SetEntData(entity, m_usSolidFlags, flags, 2, true);
 }
 
-stock SolidFlags_t GetSolidFlags( int entity )
+stock SolidFlags_t GetSolidFlags(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_usSolidFlags );
+	DeclarePropOf(entity, m_usSolidFlags);
 	
-	return view_as< SolidFlags_t >( GetEntData( entity, m_usSolidFlags, 4 ) );
+	return view_as< SolidFlags_t >(GetEntData(entity, m_usSolidFlags, 4));
 }
 
-stock void ClearSolidFlags( int entity )
+stock void ClearSolidFlags(int entity)
 {
-	SetSolidFlags( entity, 0 );
+	SetSolidFlags(entity, 0);
 }
 
-stock void RemoveSolidFlags( int entity, int flags )
+stock void RemoveSolidFlags(int entity, int flags)
 {
-	SetSolidFlags( entity, GetSolidFlags( entity ) & ~flags );
+	SetSolidFlags(entity, GetSolidFlags(entity) & ~flags);
 }
 
-stock void AddSolidFlags( int entity, int flags )
+stock void AddSolidFlags(int entity, int flags)
 {
-	SetSolidFlags( entity, GetSolidFlags( entity ) | flags );
+	SetSolidFlags(entity, GetSolidFlags(entity) | flags);
 }
 
-stock bool IsSolid( int entity )
+stock bool IsSolid(int entity)
 {
-	return ( GetSolid( entity ) != SOLID_NONE ) && ( ~GetSolidFlags( entity ) & FSOLID_NOT_SOLID );
+	return (GetSolid(entity) != SOLID_NONE) && (~GetSolidFlags(entity) & FSOLID_NOT_SOLID);
 }
 
-stock bool IsBoundsDefinedInEntitySpace( int entity )
+stock bool IsBoundsDefinedInEntitySpace(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	SolidType_t type = GetSolid( entity );
+	SolidType_t type = GetSolid(entity);
 	
-	return ( !IsSolidFlagSet( entity, FSOLID_FORCE_WORLD_ALIGNED ) ) &&
-		( type != SOLID_BBOX ) && ( type != SOLID_NONE );
+	return (!IsSolidFlagSet(entity, FSOLID_FORCE_WORLD_ALIGNED)) &&
+		(type != SOLID_BBOX) && (type != SOLID_NONE);
 }
 
 static int m_vecOrigin = -2;
-stock void GetLocalOrigin( int entity, float vec[ 3 ] )
+stock void GetLocalOrigin(int entity, float vec[ 3 ])
 {
-	Assert( IsValidEntity( entity ) );
+	Assert(IsValidEntity(entity));
 	
-	DeclarePropOf( entity, m_vecOrigin );
+	DeclarePropOf(entity, m_vecOrigin);
 	
-	GetEntDataVector( entity, m_vecOrigin, vec );
+	GetEntDataVector(entity, m_vecOrigin, vec);
 }
 
-public void SetLocalOrigin( int entity, const float vec[ 3 ] )
+public void SetLocalOrigin(int entity, const float vec[ 3 ])
 {
-	Assert( IsValidEntity( entity ) );
+	Assert(IsValidEntity(entity));
 	
-	DeclarePropOf( entity, m_vecOrigin );
+	DeclarePropOf(entity, m_vecOrigin);
 	
-	SetEntDataVector( entity, m_vecOrigin, vec, true );
+	SetEntDataVector(entity, m_vecOrigin, vec, true);
 }
 
 static int m_angRotation = -2;
-public void GetLocalAngles( int entity, float ang[ 3 ] )
+public void GetLocalAngles(int entity, float ang[ 3 ])
 {
-	Assert( IsValidEntity( entity ) );
+	Assert(IsValidEntity(entity));
 	
-	DeclarePropOf( entity, m_angRotation );
+	DeclarePropOf(entity, m_angRotation);
 	
-	GetEntDataVector( entity, m_angRotation, ang );
+	GetEntDataVector(entity, m_angRotation, ang);
 }
 
-public void SetLocalAngles( int entity, const float ang[ 3 ] )
+public void SetLocalAngles(int entity, const float ang[ 3 ])
 {
-	Assert( IsValidEntity( entity ) );
+	Assert(IsValidEntity(entity));
 	
-	DeclarePropOf( entity, m_angRotation );
+	DeclarePropOf(entity, m_angRotation);
 	
-	SetEntDataVector( entity, m_angRotation, ang, true );
+	SetEntDataVector(entity, m_angRotation, ang, true);
 }
 
 static int m_vecAbsOrigin = -2;
-public void GetAbsOrigin( int entity, float vec[ 3 ] )
+public void GetAbsOrigin(int entity, float vec[ 3 ])
 {
-	Assert( IsValidEntity( entity ) );
+	Assert(IsValidEntity(entity));
 	
-	DeclarePropOf( entity, m_vecAbsOrigin );
+	DeclarePropOf(entity, m_vecAbsOrigin);
 	
-	GetEntDataVector( entity, m_vecAbsOrigin, vec );
+	GetEntDataVector(entity, m_vecAbsOrigin, vec);
 }
 
-public void SetAbsOrigin( int entity, const float vec[ 3 ] )
+public void SetAbsOrigin(int entity, const float vec[ 3 ])
 {
-	Assert( IsValidEntity( entity ) );
+	Assert(IsValidEntity(entity));
 	
-	DeclarePropOf( entity, m_vecAbsOrigin );
+	DeclarePropOf(entity, m_vecAbsOrigin);
 	
-	SetEntDataVector( entity, m_vecAbsOrigin, vec );
+	SetEntDataVector(entity, m_vecAbsOrigin, vec);
 }
 
 static int m_angAbsRotation = -2;
-public void GetAbsAngles( int entity, float ang[ 3 ] )
+public void GetAbsAngles(int entity, float ang[ 3 ])
 {
-	Assert( IsValidEntity( entity ) );
+	Assert(IsValidEntity(entity));
 	
-	DeclarePropOf( entity, m_angAbsRotation );
+	DeclarePropOf(entity, m_angAbsRotation);
 	
-	GetEntDataVector( entity, m_angAbsRotation, ang );
+	GetEntDataVector(entity, m_angAbsRotation, ang);
 }
 
-public void SetAbsAngles( int entity, const float ang[ 3 ] )
+public void SetAbsAngles(int entity, const float ang[ 3 ])
 {
-	Assert( IsValidEntity( entity ) );
+	Assert(IsValidEntity(entity));
 	
-	DeclarePropOf( entity, m_vecAbsOrigin );
+	DeclarePropOf(entity, m_vecAbsOrigin);
 	
-	SetEntDataVector( entity, m_vecAbsOrigin, ang );
+	SetEntDataVector(entity, m_vecAbsOrigin, ang);
 }
 
 static int m_vecVelocity = -2;
-public void GetLocalVelocity( int entity, float vel[ 3 ] )
+public void GetLocalVelocity(int entity, float vel[ 3 ])
 {
-	Assert( IsValidEntity( entity ) );
+	Assert(IsValidEntity(entity));
 	
-	DeclarePropOf( entity, m_vecVelocity );
+	DeclarePropOf(entity, m_vecVelocity);
 	
-	GetEntDataVector( entity, m_vecVelocity, vel );
+	GetEntDataVector(entity, m_vecVelocity, vel);
 }
 
-public void SetLocalVelocity( int entity, const float vel[ 3 ] )
+public void SetLocalVelocity(int entity, const float vel[ 3 ])
 {
-	Assert( IsValidEntity( entity ) );
+	Assert(IsValidEntity(entity));
 	
-	DeclarePropOf( entity, m_vecVelocity );
+	DeclarePropOf(entity, m_vecVelocity);
 	
-	SetEntDataVector( entity, m_vecVelocity, vel );
+	SetEntDataVector(entity, m_vecVelocity, vel);
 }
 
 static int m_vecAbsVelocity = -2;
-public void GetAbsVelocity( int entity, float vel[ 3 ] )
+public void GetAbsVelocity(int entity, float vel[ 3 ])
 {
-	Assert( IsValidEntity( entity ) );
+	Assert(IsValidEntity(entity));
 	
-	DeclarePropOf( entity, m_vecAbsVelocity );
+	DeclarePropOf(entity, m_vecAbsVelocity);
 	
-	GetEntDataVector( entity, m_vecAbsVelocity, vel );
+	GetEntDataVector(entity, m_vecAbsVelocity, vel);
 }
 
-public void SetAbsVelocity( int entity, const float vel[ 3 ] )
+public void SetAbsVelocity(int entity, const float vel[ 3 ])
 {
-	Assert( IsValidEntity( entity ) );
+	Assert(IsValidEntity(entity));
 	
-	DeclarePropOf( entity, m_vecAbsVelocity );
+	DeclarePropOf(entity, m_vecAbsVelocity);
 	
-	SetEntDataVector( entity, m_vecAbsVelocity, vel );
+	SetEntDataVector(entity, m_vecAbsVelocity, vel);
 }
 
 static int m_vecBaseVelocity = -2;
-public void GetBaseVelocity( int entity, float vel[ 3 ] )
+public void GetBaseVelocity(int entity, float vel[ 3 ])
 {
-	Assert( IsValidEntity( entity ) );
+	Assert(IsValidEntity(entity));
 	
-	DeclarePropOf( entity, m_vecBaseVelocity );
+	DeclarePropOf(entity, m_vecBaseVelocity);
 	
-	GetEntDataVector( entity, m_vecBaseVelocity, vel );
+	GetEntDataVector(entity, m_vecBaseVelocity, vel);
 }
 
-public void SetBaseVelocity( int entity, const float vel[ 3 ] )
+public void SetBaseVelocity(int entity, const float vel[ 3 ])
 {
-	Assert( IsValidEntity( entity ) );
+	Assert(IsValidEntity(entity));
 	
-	DeclarePropOf( entity, m_vecBaseVelocity );
+	DeclarePropOf(entity, m_vecBaseVelocity);
 	
-	SetEntDataVector( entity, m_vecBaseVelocity, vel );
+	SetEntDataVector(entity, m_vecBaseVelocity, vel);
 }
 
 static int m_vecMins = -2;
-stock void GetMins( int entity, float vec[3] )
+stock void GetMins(int entity, float vec[3])
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_vecMins );
+	DeclarePropOf(entity, m_vecMins);
 	
-	GetEntDataVector( entity, m_vecMins, vec );
+	GetEntDataVector(entity, m_vecMins, vec);
 }
 
 static int m_vecMaxs = -2;
-stock void GetMaxs( int entity, float vec[3] )
+stock void GetMaxs(int entity, float vec[3])
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_vecMaxs );
+	DeclarePropOf(entity, m_vecMaxs);
 	
-	GetEntDataVector( entity, m_vecMaxs, vec );
+	GetEntDataVector(entity, m_vecMaxs, vec);
 }
 
-stock void SetMins( int entity, float back, float left, float down )
+stock void SetMins(int entity, float back, float left, float down)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_vecMins );
+	DeclarePropOf(entity, m_vecMins);
 	
 	static float vec[3];
 	vec[0] = back;
 	vec[1] = left;
 	vec[2] = down;
-	SetEntDataVector( entity, m_vecMins, vec, true );
+	SetEntDataVector(entity, m_vecMins, vec, true);
 }
 
-stock void SetMaxs( int entity, float fwd, float right, float up )
+stock void SetMaxs(int entity, float fwd, float right, float up)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_vecMaxs );
+	DeclarePropOf(entity, m_vecMaxs);
 	
 	static float vec[3];
 	vec[0] = fwd;
 	vec[1] = right;
 	vec[2] = up;
-	SetEntDataVector( entity, m_vecMaxs, vec, true );
+	SetEntDataVector(entity, m_vecMaxs, vec, true);
 }
 
-stock void SetSize( int entity, const float[3] mins, const float[3] maxs )
+stock void SetSize(int entity, const float[3] mins, const float[3] maxs)
 {
 	for (int i = 0; i < 3; i++) {
-		Assert( mins[i] < maxs[i] );
+		Assert(mins[i] < maxs[i]);
 	}
 	
-	SetMins( entity, mins[0], mins[1], mins[2] );
-	SetMaxs( entity, maxs[0], maxs[1], maxs[2] );
+	SetMins(entity, mins[0], mins[1], mins[2]);
+	SetMaxs(entity, maxs[0], maxs[1], maxs[2]);
 	
-	AddEFlags( entity, EFL_DIRTY_SURROUNDING_COLLISION_BOUNDS );
+	AddEFlags(entity, EFL_DIRTY_SURROUNDING_COLLISION_BOUNDS);
 }
 
 static int m_iHammerID = -2;
-stock int GetHammerID( int entity )
+stock int GetHammerID(int entity)
 {
-	DeclarePropOf( entity, m_iHammerID );
+	DeclarePropOf(entity, m_iHammerID);
 	
-	return GetEntData( entity, m_iHammerID, 4 );
+	return GetEntData(entity, m_iHammerID, 4);
 }
 
 //
 // Time, intervals
 //
-#define TICK_INTERVAL ( GetTickInterval() )
+#define TICK_INTERVAL (GetTickInterval())
 #if !defined _smlib_general_included
-	#define TIME_TO_TICKS(%1)		view_as< int >( 0.5 + view_as< float >( %1 ) / TICK_INTERVAL )
-	#define TICKS_TO_TIME(%1)		( TICK_INTERVAL * ( %1 ) )
-	#define ROUND_TO_TICKS(%1)	( TICK_INTERVAL * TIME_TO_TICKS( %1 ) )
+	#define TIME_TO_TICKS(%1)		view_as< int >(0.5 + view_as< float >(%1) / TICK_INTERVAL)
+	#define TICKS_TO_TIME(%1)		(TICK_INTERVAL * (%1))
+	#define ROUND_TO_TICKS(%1)	(TICK_INTERVAL * TIME_TO_TICKS(%1))
 #endif
-#define TICK_NEVER_THINK		( -1 )
+#define TICK_NEVER_THINK		(-1)
 
 static int m_nNextThinkTick = -2;
-stock void SetNextThink( int entity, float flTime = -1.0 )
+stock void SetNextThink(int entity, float flTime = -1.0)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_nNextThinkTick );
+	DeclarePropOf(entity, m_nNextThinkTick);
 	
-	if ( flTime == -1.0 ) {
-		SetEntData( entity, m_nNextThinkTick, TICK_NEVER_THINK );
+	if (flTime == -1.0) {
+		SetEntData(entity, m_nNextThinkTick, TICK_NEVER_THINK);
 		
 		return;
 	}
 	
-	SetEntData( entity, m_nNextThinkTick, TIME_TO_TICKS( flTime ), 4, true );
+	SetEntData(entity, m_nNextThinkTick, TIME_TO_TICKS(flTime), 4, true);
 }
 
-stock void StopThink( int entity )
+stock void StopThink(int entity)
 {
-	SetNextThink( entity, -1.0 );
+	SetNextThink(entity, -1.0);
 	
-	AddEFlags( entity, EFL_NO_THINK_FUNCTION );
+	AddEFlags(entity, EFL_NO_THINK_FUNCTION);
 }
 
 static int m_flFriction = -2;
-stock void SetFriction( int entity, float friction )
+stock void SetFriction(int entity, float friction)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_flFriction );
+	DeclarePropOf(entity, m_flFriction);
 	
-	SetEntDataFloat( entity, m_flFriction, friction );
+	SetEntDataFloat(entity, m_flFriction, friction);
 }
 
-stock bool IsClassedAs( int entity, const char[] classname )
+stock bool IsClassedAs(int entity, const char[] classname)
 {
 	static char buffer[128];
-	GetEntityClassname( entity, buffer, sizeof( buffer ) );
+	GetEntityClassname(entity, buffer, sizeof(buffer));
 	
-	return !strcmp( classname, buffer );
+	return !strcmp(classname, buffer);
 }
 
-stock bool IsNamedAs( int entity, const char[] name )
+stock bool IsNamedAs(int entity, const char[] name)
 {
 	static char buffer[128];
-	GetTargetname( entity, buffer, sizeof( buffer ) );
+	GetTargetname(entity, buffer, sizeof(buffer));
 	
-	return !strcmp( name, buffer );
+	return !strcmp(name, buffer);
 }
 
-stock int GetEntityModel( int entity, char[] modelname, int length )
+stock int GetEntityModel(int entity, char[] modelname, int length)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	return GetEntPropString( entity, Prop_Data, "m_ModelName", modelname, length );
+	return GetEntPropString(entity, Prop_Data, "m_ModelName", modelname, length);
 }
 
-stock bool IsModelSet( int entity, const char[] name )
+stock bool IsModelSet(int entity, const char[] name)
 {
 	static char buffer[128];
-	GetEntityModel( entity, buffer, sizeof( buffer ) );
+	GetEntityModel(entity, buffer, sizeof(buffer));
 	
-	return !strcmp( name, buffer );
+	return !strcmp(name, buffer);
 }
 
 static int m_nModelIndex = -2;
-stock int GetModelIndex( int entity )
+stock int GetModelIndex(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_nModelIndex );
+	DeclarePropOf(entity, m_nModelIndex);
 	
-	return GetEntData( entity, m_nModelIndex, 2 );
+	return GetEntData(entity, m_nModelIndex, 2);
 }
 
-stock int SetTargetname( int entity, const char[] targetname )
+stock int SetTargetname(int entity, const char[] targetname)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	return SetEntPropString( entity, Prop_Data, "m_iName", targetname );
+	return SetEntPropString(entity, Prop_Data, "m_iName", targetname);
 }
 
-stock int GetTargetname( int entity, char[] targetname, int length )
+stock int GetTargetname(int entity, char[] targetname, int length)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	return GetEntPropString( entity, Prop_Data, "m_iName", targetname, length );
+	return GetEntPropString(entity, Prop_Data, "m_iName", targetname, length);
 }
 
 static int m_pParent = -2;
-stock int GetParent( int entity )
+stock int GetParent(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	DeclarePropOf( entity, m_pParent );
+	DeclarePropOf(entity, m_pParent);
 	
-	return GetEntDataEnt2( entity, m_pParent );
+	return GetEntDataEnt2(entity, m_pParent);
 }
 
-stock void SetParent( int entity, int parent )
+stock void SetParent(int entity, int parent)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	SetVariantString( "!activator" );
-	AcceptEntityInput( entity, "SetParent", parent );
+	SetVariantString("!activator");
+	AcceptEntityInput(entity, "SetParent", parent);
 }
 
-stock void SetParentAttachment( int entity, const char[] attachmentName, bool bMaintainOffset = false )
+stock void SetParentAttachment(int entity, const char[] attachmentName, bool bMaintainOffset = false)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	SetVariantString( attachmentName );
-	AcceptEntityInput( entity, bMaintainOffset ? "SetParentAttachmentMaintainOffset" : "SetParentAttachment" );
+	SetVariantString(attachmentName);
+	AcceptEntityInput(entity, bMaintainOffset ? "SetParentAttachmentMaintainOffset" : "SetParentAttachment");
 }
 
-stock void ClearParent( int entity )
+stock void ClearParent(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	AcceptEntityInput( entity, "ClearParent" );
+	AcceptEntityInput(entity, "ClearParent");
 }
 
-stock void UseEntity( int entity, int user = NULL_ENTITY, UseType type = Use_Toggle )
+stock void UseEntity(int entity, int user = NULL_ENTITY, UseType type = Use_Toggle)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	AcceptEntityInput( entity, "Use", user, entity, view_as< int >( type ) );
+	AcceptEntityInput(entity, "Use", user, entity, view_as< int >(type));
 }
 
-stock void EnableEntity( int entity, int activator = NULL_ENTITY )
+stock void EnableEntity(int entity, int activator = NULL_ENTITY)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	AcceptEntityInput( entity, "Enable", activator );
+	AcceptEntityInput(entity, "Enable", activator);
 }
 
-stock void DisableEntity( int entity )
+stock void DisableEntity(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	AcceptEntityInput( entity, "Disable" );
+	AcceptEntityInput(entity, "Disable");
 }
 
-stock void KillEntity( int entity )
+stock void KillEntity(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	AcceptEntityInput( entity, "Kill" );
+	AcceptEntityInput(entity, "Kill");
 }
 
-stock void KillHierarchy( int entity )
+stock void KillHierarchy(int entity)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	AcceptEntityInput( entity, "KillHierarchy" );
+	AcceptEntityInput(entity, "KillHierarchy");
 }
 
-stock void AddOutput( int entity, const char[] fmt, any ... )
+stock void AddOutput(int entity, const char[] fmt, any ...)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
 	static char buffer[1024];
-	VFormat( buffer, sizeof( buffer ), fmt, 3 );
+	VFormat(buffer, sizeof(buffer), fmt, 3);
 	
-	SetVariantString( buffer);
-	AcceptEntityInput( entity, "AddOutput" );
+	SetVariantString(buffer);
+	AcceptEntityInput(entity, "AddOutput");
 }
 
 #define ENTITY_WORLD 0
-stock void AddEntityTimer( int entity, EntityOutput callback, float flTime = 0.0 )
+stock void AddEntityTimer(int entity, EntityOutput callback, float flTime = 0.0)
 {
-	Assert( IsValidEdict( entity ) );
+	Assert(IsValidEdict(entity));
 	
-	HookSingleEntityOutput( entity, "OnUser4", callback, true );
+	HookSingleEntityOutput(entity, "OnUser4", callback, true);
 	
-	AddOutput( entity, "OnUser3 !self:FireUser4::%0.4f:1", flTime );
-	AcceptEntityInput( entity, "FireUser3" );
+	AddOutput(entity, "OnUser3 !self:FireUser4::%0.4f:1", flTime);
+	AcceptEntityInput(entity, "FireUser3");
 }
 
 // Inline wrapper for most used action with FindEntityByClassname
-#define LoopByClassname(%0,%1) for (int %0 = NULL_ENTITY; ( %0 = FindEntityByClassname( %0, %1 ) ) != NULL_ENTITY; )
+#define LoopByClassname(%0,%1) for (int %0 = NULL_ENTITY; (%0 = FindEntityByClassname(%0, %1)) != NULL_ENTITY;)
