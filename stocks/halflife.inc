@@ -140,14 +140,14 @@ stock void SetClientDeathTime( int client, float flTime = 0.0 )
 }
 
 int m_hThrower = -2;
-int GetThrower(int entity)
+stock int GetThrower(int entity)
 {
 	DeclareNetPropOf(entity, m_hThrower);
 	
 	return GetEntDataEnt2(entity, m_hThrower);
 }
 
-void SetThrower(int entity, int client)
+stock void SetThrower(int entity, int client)
 {
 	DeclareNetPropOf(entity, m_hThrower);
 	
