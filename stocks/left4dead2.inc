@@ -303,3 +303,4 @@ stock int FindAvailableSurvivorBot()
 	
 	return 0;
 }
+static int m_hasVisibleThreats = -2;stock bool HasPlayerVisibleThreats(int client){ Assert(IsClient(client));  DeclareNetPropOf(client, m_hasVisibleThreats);  return !!GetEntData(client, m_hasVisibleThreats);}
