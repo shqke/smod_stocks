@@ -9,9 +9,11 @@
 // unsafe>
 #define IsClientEntity(%0) ( %0 >= 1 && %0 <= MaxClients )
 #define IsClient(%0) ( IsClientEntity(%0) && IsClientInGame(%0) )
-#define IsClientAndAlive(%0) ( IsClientEntity(%0) && IsPlayerAlive(%0) )
+#define IsClientAndAlive(%0) ( IsClient(%0) && IsPlayerAlive(%0) )
 #define IsClientAndConnected(%0) ( IsClientEntity(%0) && IsClientConnected(%0) )
 #define IsClientAndAuthorized(%0) ( IsClientEntity(%0) && IsClientAuthorized(%0) )
+#define IsClientBot(%0) ( IsClient(%0) && IsFakeClient(%0) )
+#define IsClientBotAndAlive(%0) ( IsClientBot(%0) && IsPlayerAlive(%0) )
 
 #define LoopThroughPlayers(%0) LoopThroughClients(%0)\
 	if ( !IsClientInGame(%0) ) {}\
