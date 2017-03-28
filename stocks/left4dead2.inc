@@ -290,7 +290,7 @@ stock int GetHumanSpectator(int bot)
 	
 	DeclareNetPropOf(bot, m_humanSpectatorUserID);
 	
-	return GetClientOfUserId(GetEntData(bot, m_humanSpectatorUserID, 1));
+	return GetClientOfUserId(GetEntData(bot, m_humanSpectatorUserID));
 }
 
 stock int FindAvailableSurvivorBot()
