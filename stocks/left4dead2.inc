@@ -282,17 +282,24 @@ stock int GetPendingTankPlayerIndex()
 	return GetEntData(entity, m_pendingTankPlayerIndex);
 }
 
-stock int FindAvailableSurvivorBot()
-{ 
-	for (int i = 1; i <= MaxClients; i++) {  
-		if (IsClientInGame(i) && GetClientTeam(i) == TEAM_SURVIVOR && IsFakeClient(i)) {
-			if (IsPlayerAlive(i) && !GetClientOfUserId(GetEntProp(i, Prop_Send, "m_humanSpectatorUserID"))) {
-				return i;
-			}
+// m_humanSpectatorEntIndex ?
+static int m_humanSpectatorUserID = -2;
+stock int GetHumanSpectator(int bot)
+{
+	Assert(IsClientAndAlive(bot));
 	
-			return i;  
-		} 
-	} 
+	DeclareNetPropOf(bot, m_humanSpectatorUserID);
+	
+	return GetClientOfUserId(GetEntData(bot, m_humanSpectatorUserID, 1));
+}
+
+stock int FindAvailableSurvivorBot()
+{
+	for (int i = 1; i <= MaxClients; i++) {
+		if (IsClientBotAndAlive(i) && GetClientTeam(i) == TEAM_SURVIVOR && !GetHumanSpectator(i)) {
+			return i;
+		}
+	}
 	
 	return 0;
 }
