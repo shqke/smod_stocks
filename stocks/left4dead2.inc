@@ -272,7 +272,6 @@ static int m_pendingTankPlayerIndex = -2;
 stock int GetPendingTankPlayerIndex()
 {
 	int entity = FindEntityByClassname(-1, "terror_player_manager");
-	
 	if (entity == -1) {
 		return entity;
 	}
@@ -286,7 +285,7 @@ stock int GetPendingTankPlayerIndex()
 static int m_humanSpectatorUserID = -2;
 stock int GetHumanSpectator(int bot)
 {
-	Assert(IsClientAndAlive(bot));
+	Assert(IsClient(bot));
 	
 	DeclareNetPropOf(bot, m_humanSpectatorUserID);
 	
@@ -296,7 +295,7 @@ stock int GetHumanSpectator(int bot)
 stock int FindAvailableSurvivorBot()
 {
 	for (int i = 1; i <= MaxClients; i++) {
-		if (IsClientBotAndAlive(i) && GetClientTeam(i) == TEAM_SURVIVOR && !GetHumanSpectator(i)) {
+		if (IsClientBotAndAlive(i) && GetClientTeam(i) == TEAM_SURVIVOR && !GetHumanSpectator(i)) {
 			return i;
 		}
 	}

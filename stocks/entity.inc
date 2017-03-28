@@ -6,6 +6,7 @@
 #include <sdktools_functions>
 #include <sdktools_entinput>
 #include <sdktools_entoutput>
+#include <sdkhooks>
 
 #include <stocks/assert>
 #include <stocks/property>
