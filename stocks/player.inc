@@ -19,7 +19,7 @@
 	if ( !IsClientInGame(%0) ) {}\
 	else
 
-#define LoopThroughClients(%0) for (int %0 = MaxClients; %0; --%0)
+#define LoopThroughClients(%0) for (int %0 = MaxClients; %0; %0--)
 
 stock int GetCurrentClients()
 {
