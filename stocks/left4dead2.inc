@@ -320,5 +320,5 @@ stock int GetPlayerFrustration(int client)
 	
 	DeclareNetPropOf(client, m_frustration);
 	
-	return GetEntData(client, m_frustration);
+	return GetEntData(client, m_frustration, 1);
 }
