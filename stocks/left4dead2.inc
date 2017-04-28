@@ -312,3 +312,13 @@ stock bool HasPlayerVisibleThreats(int client)
 
     return !!GetEntData(client, m_hasVisibleThreats, 1);
 }
+
+static int m_frustration = -2;
+stock int GetPlayerFrustration(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_frustration);
+	
+	return GetEntData(client, m_frustration, 1);
+}
