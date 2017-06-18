@@ -139,7 +139,7 @@ stock int GetUseActionOwner(int client)
 {
 	Assert(IsClient(client));
 	
-	DeclarePropOf(client, m_useActionOwner);
+	DeclareNetPropOf(client, m_useActionOwner);
 	
 	return GetEntDataEnt2(client, m_useActionOwner);
 }
@@ -148,7 +148,7 @@ stock void SetUseActionOwner(int client, int owner = NULL_ENTITY)
 {
 	Assert(IsClient(client));
 	
-	DeclarePropOf(client, m_useActionOwner);
+	DeclareNetPropOf(client, m_useActionOwner);
 	
 	return SetEntDataEnt2(client, m_useActionOwner, owner, true);
 }
@@ -158,7 +158,7 @@ stock int GetUseActionTarget(int client)
 {
 	Assert(IsClient(client));
 	
-	DeclarePropOf(client, m_useActionTarget);
+	DeclareNetPropOf(client, m_useActionTarget);
 	
 	return GetEntDataEnt2(client, m_useActionTarget);
 }
@@ -167,7 +167,7 @@ stock void SetUseActionTarget(int client, int target = NULL_ENTITY)
 {
 	Assert(IsClient(client));
 	
-	DeclarePropOf(client, m_useActionTarget);
+	DeclareNetPropOf(client, m_useActionTarget);
 	
 	return SetEntDataEnt2(client, m_useActionTarget, target, true);
 }
