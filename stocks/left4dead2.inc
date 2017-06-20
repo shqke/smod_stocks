@@ -322,3 +322,13 @@ stock int GetPlayerFrustration(int client)
 	
 	return GetEntData(client, m_frustration, 1);
 }
+
+stock int m_customAbility = -2;
+stock int GetPlayerCustomAbility(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_customAbility);
+	
+	return GetEntDataEnt2(client, m_customAbility);
+}
