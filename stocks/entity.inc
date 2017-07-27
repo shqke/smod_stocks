@@ -85,7 +85,7 @@ stock void SetGroundEntity(int entity, int groundent = NULL_ENTITY)
 	
 	SetEntDataEnt2(entity, m_hGroundEntity, groundent, true);
 	
-	SetEntityFlags(entity, (GetEntityFlags(entity) & ~(FL_ONGROUND)) | (IsValidEdict(groundent) << FL_ONGROUND));
+	SetEntityFlags(entity, (GetEntityFlags(entity) & ~(FL_ONGROUND)) | (+IsValidEdict(groundent) << FL_ONGROUND));
 }
 
 enum
