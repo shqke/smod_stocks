@@ -162,7 +162,6 @@ stock void SetTakeDamage(int entity, int value)
 }
 
 #if !defined _smlib_entities_included
-	#if !defined __thelpers_entity_included
 enum
 {
 	EFL_KILLME	=				(1<<0),	// This entity is marked for death -- This allows the game to actually delete ents at a safe time
@@ -214,7 +213,6 @@ enum
 	EFL_NO_PHYSCANNON_INTERACTION =	(1<<30),	// Physcannon can't pick these up or punt them
 	EFL_NO_DAMAGE_FORCES =		(1<<31),	// Doesn't accept forces from physics damage
 };
-	#endif
 #endif
 
 static int m_iEFlags = -2;
