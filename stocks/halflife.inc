@@ -233,7 +233,7 @@ methodmap CEnvExplosion __nullable__ < CBaseEntity
 			return;
 		}
 		
-		this.AddOutput( "OnUser1 !self:Explode::%0.4f:1", delay );
+		AddOutput( this.Index, "OnUser1 !self:Explode::%0.4f:1", delay );
 		this.AcceptInput( "FireUser1" );
 	}
 	
