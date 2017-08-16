@@ -51,15 +51,6 @@ stock int GetClientViewEntity( int client )
 	return GetEntDataEnt2(client, m_hViewEntity);
 }
 
-stock void SetClientViewEntity( int client, int entity )
-{
-	Assert(IsClient(client));
-	
-	DeclarePropOf(client, m_hViewEntity);
-	
-	SetEntDataEnt2(client, m_hViewEntity, entity, true);
-}
-
 stock void MoveToPlayer( int client, int target )
 {
 	Assert(IsClient(client));
