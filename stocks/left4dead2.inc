@@ -323,7 +323,7 @@ stock int GetPlayerFrustration(int client)
 	return GetEntData(client, m_frustration, 1);
 }
 
-stock int m_customAbility = -2;
+static int m_customAbility = -2;
 stock int GetPlayerCustomAbility(int client)
 {
 	Assert(IsClient(client));
@@ -331,4 +331,14 @@ stock int GetPlayerCustomAbility(int client)
 	DeclareNetPropOf(client, m_customAbility);
 	
 	return GetEntDataEnt2(client, m_customAbility);
+}
+
+static int m_stunTimer = -2;
+stock bool IsPlayerStunned(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_stunTimer);
+	
+	return GetEntDataFloat(client, m_stunTimer + 8) != -1;
 }
