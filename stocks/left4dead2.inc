@@ -25,6 +25,13 @@ enum ZombieClass
 	Zombie_Unknown2
 };
 
+enum KnockdownReasonType
+{
+	KnockdownType_Lunged = 1,		/** player is pounced by hunter **/
+	KnockdownType_TankProjectile,		/** player is hit by tank projectile (rocks, etc) **/
+	KnockdownType_HitByCharger		/** player is impacted by charger **/
+};
+
 static int m_zombieClass = -2;
 stock ZombieClass GetZombieClass(int client)
 {
@@ -341,4 +348,24 @@ stock bool IsPlayerStunned(int client)
 	DeclareNetPropOf(client, m_stunTimer);
 	
 	return GetEntDataFloat(client, m_stunTimer + 8) != -1;
+}
+
+static int m_knockdownTimer = -2;
+stock bool IsPlayerKnockedDown(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_knockdownTimer);
+	
+	return GetEntDataFloat(client, m_knockdownTimer + 4) + 2.5 != -1;
+}
+
+static int m_knockdownReason = -2;
+stock KnockdownReasonType GetPlayerKnockdownReason(int client)
+{
+	Assert(IsClient(client));
+
+	DeclareNetPropOf(client, m_knockdownReason);
+	
+	return GetEntData(client, k_knockdownReason);
 }
