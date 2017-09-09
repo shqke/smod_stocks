@@ -367,5 +367,5 @@ stock KnockdownReasonType GetPlayerKnockdownReason(int client)
 
 	DeclareNetPropOf(client, m_knockdownReason);
 	
-	return GetEntData(client, k_knockdownReason);
+	return !!GetEntData(client, k_knockdownReason, 1);
 }
