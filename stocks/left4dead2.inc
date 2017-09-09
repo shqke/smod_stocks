@@ -139,7 +139,7 @@ stock int GetUseActionOwner(int client)
 {
 	Assert(IsClient(client));
 	
-	DeclarePropOf(client, m_useActionOwner);
+	DeclareNetPropOf(client, m_useActionOwner);
 	
 	return GetEntDataEnt2(client, m_useActionOwner);
 }
@@ -148,7 +148,7 @@ stock void SetUseActionOwner(int client, int owner = NULL_ENTITY)
 {
 	Assert(IsClient(client));
 	
-	DeclarePropOf(client, m_useActionOwner);
+	DeclareNetPropOf(client, m_useActionOwner);
 	
 	return SetEntDataEnt2(client, m_useActionOwner, owner, true);
 }
@@ -158,7 +158,7 @@ stock int GetUseActionTarget(int client)
 {
 	Assert(IsClient(client));
 	
-	DeclarePropOf(client, m_useActionTarget);
+	DeclareNetPropOf(client, m_useActionTarget);
 	
 	return GetEntDataEnt2(client, m_useActionTarget);
 }
@@ -167,7 +167,7 @@ stock void SetUseActionTarget(int client, int target = NULL_ENTITY)
 {
 	Assert(IsClient(client));
 	
-	DeclarePropOf(client, m_useActionTarget);
+	DeclareNetPropOf(client, m_useActionTarget);
 	
 	return SetEntDataEnt2(client, m_useActionTarget, target, true);
 }
@@ -311,4 +311,34 @@ stock bool HasPlayerVisibleThreats(int client)
     DeclareNetPropOf(client, m_hasVisibleThreats); 
 
     return !!GetEntData(client, m_hasVisibleThreats, 1);
+}
+
+static int m_frustration = -2;
+stock int GetPlayerFrustration(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_frustration);
+	
+	return GetEntData(client, m_frustration, 1);
+}
+
+static int m_customAbility = -2;
+stock int GetPlayerCustomAbility(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_customAbility);
+	
+	return GetEntDataEnt2(client, m_customAbility);
+}
+
+static int m_stunTimer = -2;
+stock bool IsPlayerStunned(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_stunTimer);
+	
+	return GetEntDataFloat(client, m_stunTimer + 8) != -1;
 }
