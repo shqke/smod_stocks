@@ -7,7 +7,7 @@
 
 stock bool IsAdmin( int client )
 {
-	Assert( IsClientAndAuthorized( client ) );
+	Assert( IsClientAndConnected( client ) );
 	
 	AdminId admin = GetUserAdmin( client );
 	
