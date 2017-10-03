@@ -9,7 +9,7 @@ stock bool IsAdmin( int client )
 {
 	Assert( IsClientAndConnected( client ) );
 	
-	return GetUserFlagBits( client ) & view_as<int>( Admin_Generic );
+	return GetUserFlagBits( client ) & ADMFLAG_GENERIC;
 }
 
 stock void PrintToAllAdminChat( const char[] message, any ... )
