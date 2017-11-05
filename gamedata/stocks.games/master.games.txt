@@ -1,0 +1,16 @@
+"Game Master"
+{
+	"common.games.txt"
+	{
+	}
+	
+	"engine.l4d2.txt"
+	{
+		"engine"	"left4dead2"
+	}
+	
+	"game.left4dead2.txt"
+	{
+		"game"	"left4dead2"
+	}
+}

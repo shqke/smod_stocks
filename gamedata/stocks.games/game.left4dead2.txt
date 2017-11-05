@@ -1,0 +1,14 @@
+"Games"
+{
+	"#default"
+	{
+		"Offsets"
+		{
+			"NetworkChange"
+			{
+				"windows"	"0"
+				"linux"		"1"
+			}
+		}
+	}
+}

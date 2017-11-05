@@ -25,7 +25,7 @@ enum ZombieClass
 	Zombie_Unknown2
 };
 
-static int m_zombieClass = -2;
+stock static int m_zombieClass = -2;
 stock ZombieClass GetZombieClass(int client)
 {
 	Assert(IsClient(client));
@@ -40,7 +40,7 @@ stock ZombieClass GetZombieClass(int client)
 #define UPGRADEFLAG_EXPLOSIVE 		0x2
 #define UPGRADEFLAG_LASER			0x4
 
-static int m_upgradeBitVec = -2;
+stock static int m_upgradeBitVec = -2;
 /**
  * Gets a weapon's current upgrade bit
  *
@@ -73,7 +73,7 @@ stock void SetWeaponUpgradeBits(int weapon, int flags)
 	SetEntData(weapon, m_upgradeBitVec, flags, 4, true);
 }
 
-static int m_nUpgradedPrimaryAmmoLoaded = -2;
+stock static int m_nUpgradedPrimaryAmmoLoaded = -2;
 /**
  * Gets a weapon's loaded upgrade ammo
  *
@@ -115,7 +115,7 @@ enum BackpackItemActionType
 	UseAction_UsePointScript = 11,
 };
 
-static int m_iCurrentUseAction = -2;
+stock static int m_iCurrentUseAction = -2;
 stock BackpackItemActionType GetUseAction(int client)
 {
 	Assert(IsClient(client));
@@ -134,7 +134,7 @@ stock void SetUseAction(int client, BackpackItemActionType action = UseAction_No
 	SetEntData(client, m_iCurrentUseAction, view_as<int>(action), 1);
 }
 
-static int m_useActionOwner = -2;
+stock static int m_useActionOwner = -2;
 stock int GetUseActionOwner(int client)
 {
 	Assert(IsClient(client));
@@ -150,10 +150,10 @@ stock void SetUseActionOwner(int client, int owner = NULL_ENTITY)
 	
 	DeclareNetPropOf(client, m_useActionOwner);
 	
-	return SetEntDataEnt2(client, m_useActionOwner, owner, true);
+	SetEntDataEnt2(client, m_useActionOwner, owner, true);
 }
 
-static int m_useActionTarget = -2;
+stock static int m_useActionTarget = -2;
 stock int GetUseActionTarget(int client)
 {
 	Assert(IsClient(client));
@@ -169,20 +169,20 @@ stock void SetUseActionTarget(int client, int target = NULL_ENTITY)
 	
 	DeclareNetPropOf(client, m_useActionTarget);
 	
-	return SetEntDataEnt2(client, m_useActionTarget, target, true);
+	SetEntDataEnt2(client, m_useActionTarget, target, true);
 }
 
-static int m_itTimer = -2;
+stock static int m_itTimer = -2;
 stock bool IsPlayerIT(int client)
 {
 	Assert(IsClient(client));
 	
 	DeclareNetPropOf(client, m_itTimer);
 	
-	return GetEntDataFloat(player, m_itTimer + 8) != -1.0;
+	return GetEntDataFloat(client, m_itTimer + 8) != -1.0;
 }
 
-static int m_tongueOwner = -2;
+stock static int m_tongueOwner = -2;
 stock int GetSurvivorSmokerAttacker(int client)
 {
 	Assert(IsClient(client));
@@ -192,7 +192,7 @@ stock int GetSurvivorSmokerAttacker(int client)
 	return GetEntDataEnt2(client, m_tongueOwner);
 }
 
-static int m_pounceAttacker = -2;
+stock static int m_pounceAttacker = -2;
 stock int GetSurvivorHunterAttacker(int client)
 {
 	Assert(IsClient(client));
@@ -202,7 +202,7 @@ stock int GetSurvivorHunterAttacker(int client)
 	return GetEntDataEnt2(client, m_pounceAttacker);
 }
 
-static int m_jockeyAttacker = -2;
+stock static int m_jockeyAttacker = -2;
 stock int GetSurvivorJockeyAttacker(int client)
 {
 	Assert(IsClient(client));
@@ -212,7 +212,7 @@ stock int GetSurvivorJockeyAttacker(int client)
 	return GetEntDataEnt2(client, m_jockeyAttacker);
 }
 
-static int m_carryAttacker = -2;
+stock static int m_carryAttacker = -2;
 stock int GetSurvivorCarryAttacker(int client)
 {
 	Assert(IsClient(client));
@@ -222,7 +222,7 @@ stock int GetSurvivorCarryAttacker(int client)
 	return GetEntDataEnt2(client, m_carryAttacker);
 }
 
-static int m_pummelAttacker = -2;
+stock static int m_pummelAttacker = -2;
 stock int GetSurvivorPummelAttacker(int client)
 {
 	Assert(IsClient(client));
@@ -238,7 +238,7 @@ stock bool HasSurvivorAnyAttacker(int client)
 		GetSurvivorCarryAttacker(client) > 0 || GetSurvivorPummelAttacker(client) > 0);
 }
 
-static int m_isGhost = -2;
+stock static int m_isGhost = -2;
 stock bool IsPlayerGhost(int client)
 {
 	Assert(IsClient(client));
@@ -248,7 +248,7 @@ stock bool IsPlayerGhost(int client)
 	return !!GetEntData(client, m_isGhost, 1);	
 }
 
-static int m_staggerTimer = -2;
+stock static int m_staggerTimer = -2;
 stock bool IsPlayerStaggering(int client)
 {
 	Assert(IsClient(client));
@@ -258,7 +258,7 @@ stock bool IsPlayerStaggering(int client)
 	return GetEntDataFloat(client, m_staggerTimer + 8) != -1;	
 }
 
-static int m_isIncapacitated = -2;
+stock static int m_isIncapacitated = -2;
 stock bool IsPlayerIncapacitated(int client)
 {
 	Assert(IsClient(client));
@@ -268,7 +268,7 @@ stock bool IsPlayerIncapacitated(int client)
 	return !!GetEntData(client, m_isIncapacitated, 1);
 }
 
-static int m_pendingTankPlayerIndex = -2;
+stock static int m_pendingTankPlayerIndex = -2;
 stock int GetPendingTankPlayerIndex()
 {
 	int entity = FindEntityByClassname(-1, "terror_player_manager");
@@ -282,7 +282,7 @@ stock int GetPendingTankPlayerIndex()
 }
 
 // m_humanSpectatorEntIndex ?
-static int m_humanSpectatorUserID = -2;
+stock static int m_humanSpectatorUserID = -2;
 stock int GetHumanSpectator(int bot)
 {
 	Assert(IsClient(bot));
@@ -303,7 +303,7 @@ stock int FindAvailableSurvivorBot()
 	return 0;
 }
 
-static int m_hasVisibleThreats = -2;
+stock static int m_hasVisibleThreats = -2;
 stock bool HasPlayerVisibleThreats(int client) 
 {
     Assert(IsClient(client));
@@ -313,7 +313,7 @@ stock bool HasPlayerVisibleThreats(int client)
     return !!GetEntData(client, m_hasVisibleThreats, 1);
 }
 
-static int m_frustration = -2;
+stock static int m_frustration = -2;
 stock int GetPlayerFrustration(int client)
 {
 	Assert(IsClient(client));
@@ -323,7 +323,7 @@ stock int GetPlayerFrustration(int client)
 	return GetEntData(client, m_frustration, 1);
 }
 
-static int m_customAbility = -2;
+stock static int m_customAbility = -2;
 stock int GetPlayerCustomAbility(int client)
 {
 	Assert(IsClient(client));
@@ -331,14 +331,4 @@ stock int GetPlayerCustomAbility(int client)
 	DeclareNetPropOf(client, m_customAbility);
 	
 	return GetEntDataEnt2(client, m_customAbility);
-}
-
-static int m_stunTimer = -2;
-stock bool IsPlayerStunned(int client)
-{
-	Assert(IsClient(client));
-	
-	DeclareNetPropOf(client, m_stunTimer);
-	
-	return GetEntDataFloat(client, m_stunTimer + 8) != -1;
 }

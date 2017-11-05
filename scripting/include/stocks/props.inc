@@ -7,7 +7,7 @@
 #include <stocks/player>
 
 // This is NOT for CBreakable
-int m_hBreaker = -2;
+stock static int m_hBreaker = -2;
 int GetPropBreaker(int entity)
 {
 	DeclarePropOf(entity, m_hBreaker);
@@ -22,7 +22,7 @@ void SetPropBreaker(int entity, int breaker)
 	SetEntDataEnt2(entity, m_hBreaker, breaker);
 }
 
-int m_hLastAttacker = -2;
+stock static int m_hLastAttacker = -2;
 int GetPropLastAttacker(int entity)
 {
 	DeclarePropOf(entity, m_hLastAttacker);
@@ -39,7 +39,7 @@ void SetPropLastAttacker(int entity, int attacker)
 
 // void SetPhysicsAttacker( CBasePlayer *pEntity, float flTime );
 
-int m_hPhysicsAttacker = -2;
+stock static int m_hPhysicsAttacker = -2;
 int GetPropPhysicsAttacker(int entity)
 {
 	DeclarePropOf(entity, m_hPhysicsAttacker);
