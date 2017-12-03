@@ -179,7 +179,7 @@ stock bool IsPlayerIT(int client)
 	
 	DeclareNetPropOf(client, m_itTimer);
 	
-	return GetEntDataFloat(player, m_itTimer + 8) != -1.0;
+	return GetEntDataFloat(client, m_itTimer + 8) != -1.0;
 }
 
 static int m_tongueOwner = -2;
