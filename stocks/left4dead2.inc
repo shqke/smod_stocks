@@ -20,9 +20,9 @@ enum ZombieClass
 	Zombie_Spitter,
 	Zombie_Jockey,
 	Zombie_Charger,
-	Zombie_Unknown1,
+	Zombie_Witch,
 	Zombie_Tank,
-	Zombie_Unknown2
+	Zombie_Unknown1
 };
 
 static int m_zombieClass = -2;
