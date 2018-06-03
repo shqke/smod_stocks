@@ -22,7 +22,7 @@ enum ZombieClass
 	Zombie_Charger,
 	Zombie_Witch,
 	Zombie_Tank,
-	Zombie_Unknown1
+	Zombie_Max,
 };
 
 static int m_zombieClass = -2;
