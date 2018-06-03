@@ -13,7 +13,7 @@
 
 enum ZombieClass
 {
-	Zombie_Invalid = 0,
+	Zombie_Common = 0,
 	Zombie_Smoker,
 	Zombie_Boomer,
 	Zombie_Hunter,
@@ -22,7 +22,7 @@ enum ZombieClass
 	Zombie_Charger,
 	Zombie_Witch,
 	Zombie_Tank,
-	Zombie_Max,
+	Zombie_Survivor,
 };
 
 static int m_zombieClass = -2;
