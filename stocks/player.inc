@@ -246,5 +246,5 @@ stock PlayerState GetPlayerState(int client)
 	
 	DeclareNetPropOf(client, m_iPlayerState);
 	
-	return GetEntData(client, m_iPlayerState, 1);
+	return view_as<PlayerState>(GetEntData(client, m_iPlayerState, 1));
 }
