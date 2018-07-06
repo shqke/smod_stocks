@@ -356,6 +356,7 @@ stock bool IsPlayerStunned(int client)
 	return GetEntDataFloat(client, m_stunTimer + 8) != -1;
 }
 
+static int m_ghostSpawnState = -2;
 stock int GetPlayerGhostSpawnState(int client)
 {
 	Assert(IsClient(client));
