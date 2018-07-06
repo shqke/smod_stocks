@@ -11,7 +11,6 @@
 #define	TEAM_INFECTED			3
 #define TEAM_SCRIPTEDAI			4 // Left 4 Dead 1 bots
 
-#define GHOSTFLAG_PRESS_FIRE_TO_PLAY	(0 << 0)
 #define GHOSTFLAG_SPAWN_DISABLED	(1 << 0)
 #define GHOSTFLAG_WAIT_FOR_SAFE_AREA	(1 << 1)
 #define GHOSTFLAG_WAIT_FOR_FINALE	(1 << 2)
