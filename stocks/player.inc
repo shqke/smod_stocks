@@ -43,6 +43,8 @@ enum PlayerState
 	STATE_DEATH_ANIM,			// Playing death anim, waiting for that to finish.
 	STATE_DEATH_WAIT_FOR_KEY,	// Done playing death anim. Waiting for keypress to go into observer mode.
 	STATE_OBSERVER_MODE,		// Noclipping around, watching players, etc.
+	STATE_WAITING_FOR_RESCUE,
+	STATE_GHOST,
 	NUM_PLAYER_STATES
 };
 
