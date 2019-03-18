@@ -364,3 +364,30 @@ stock int GetPlayerGhostSpawnState(int client)
 	
 	return GetEntData(client, m_ghostSpawnState);
 }
+
+static int m_flProgressBarStartTime = -2;
+stock float GetPlayerProgressBarStartTime( int client )
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_flProgressBarStartTime);
+	
+	return GetEntDataFloat(client, m_flProgressBarStartTime);
+}
+
+static int m_flProgressBarDuration = -2;
+stock float GetPlayerProgressBarDuration( int client )
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_flProgressBarDuration);
+	
+	return GetEntDataFloat(client, m_flProgressBarDuration);
+}
+
+stock float GetPlayerProgressBarPercent( int client )
+{
+	Assert(IsClient(client));
+	
+	return (GetEntitySimulationTime(client) - GetPlayerProgressBarStartTime(client)) / GetPlayerProgressBarDuration(client);
+}
