@@ -3,7 +3,7 @@
 #endif
 #define _stocks_assert_included
 
-stock void _null() {}
+stock bool _null() { return false; }
 
 // As cheap as possible, no warnings
 #define NULL_EXPRESSION do {} while( false && _null() )
