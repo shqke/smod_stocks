@@ -959,5 +959,15 @@ stock void AddEntityTimer(int entity, EntityOutput callback, float flTime = 0.0)
 	AcceptEntityInput(entity, "FireUser3");
 }
 
+static int m_flSimulationTime = -2;
+stock float GetEntitySimulationTime(int entity)
+{
+	Assert(IsValidEdict(entity));
+	
+	DeclareNetPropOf(entity, m_flSimulationTime);
+	
+	return GetEntDataFloat(entity, m_flSimulationTime);
+}
+
 // Inline wrapper for most used action with FindEntityByClassname
 #define LoopByClassname(%0,%1) for (int %0 = NULL_ENTITY; (%0 = FindEntityByClassname(%0, %1)) != NULL_ENTITY;)
