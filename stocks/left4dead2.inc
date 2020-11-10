@@ -366,7 +366,7 @@ stock int GetPlayerGhostSpawnState(int client)
 }
 
 static int m_flProgressBarStartTime = -2;
-stock float GetPlayerProgressBarStartTime( int client )
+stock float GetPlayerProgressBarStartTime(int client)
 {
 	Assert(IsClient(client));
 	
@@ -376,7 +376,7 @@ stock float GetPlayerProgressBarStartTime( int client )
 }
 
 static int m_flProgressBarDuration = -2;
-stock float GetPlayerProgressBarDuration( int client )
+stock float GetPlayerProgressBarDuration(int client)
 {
 	Assert(IsClient(client));
 	
@@ -385,7 +385,7 @@ stock float GetPlayerProgressBarDuration( int client )
 	return GetEntDataFloat(client, m_flProgressBarDuration);
 }
 
-stock float GetPlayerProgressBarPercent( int client )
+stock float GetPlayerProgressBarPercent(int client)
 {
 	Assert(IsClient(client));
 	
