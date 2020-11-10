@@ -37,6 +37,19 @@ enum ZombieClass
 	Zombie_Survivor,
 };
 
+enum SurvivorCharacterType
+{
+	SurvivorCharacter_Gambler = 0,
+	SurvivorCharacter_Producer,
+	SurvivorCharacter_Coach,
+	SurvivorCharacter_Mechanic,
+	SurvivorCharacter_NamVet,
+	SurvivorCharacter_TeenGirl,
+	SurvivorCharacter_Biker,
+	SurvivorCharacter_Manager,
+	SurvivorCharacter_Unknown
+};
+
 static int m_zombieClass = -2;
 stock ZombieClass GetZombieClass(int client)
 {
@@ -390,4 +403,49 @@ stock float GetPlayerProgressBarPercent(int client)
 	Assert(IsClient(client));
 	
 	return (GetEntitySimulationTime(client) - GetPlayerProgressBarStartTime(client)) / GetPlayerProgressBarDuration(client);
+}
+
+stock SurvivorCharacterType GetCharacterFromName(const char[] name)
+{
+	if (StrEqual(name, "Gambler", false) || StrEqual(name, "Nick", false))
+	{
+		return SurvivorCharacter_Gambler;
+	}
+
+	if (StrEqual(name, "Producer", false) || StrEqual(name, "Rochelle", false))
+	{
+		return SurvivorCharacter_Producer;
+	}
+
+	if (StrEqual(name, "Coach", false))
+	{
+		return SurvivorCharacter_Coach;
+	}
+
+	if (StrEqual(name, "Mechanic", false) || StrEqual(name, "Ellis", false))
+	{
+		return SurvivorCharacter_Mechanic;
+	}
+
+	if (StrEqual(name, "NamVet", false) || StrEqual(name, "Bill", false))
+	{
+		return SurvivorCharacter_NamVet;
+	}
+
+	if (StrEqual(name, "TeenGirl", false) || StrEqual(name, "TeenAngst", false) || StrEqual(name, "Zoey", false))
+	{
+		return SurvivorCharacter_TeenGirl;
+	}
+
+	if (StrEqual(name, "Biker", false) || StrEqual(name, "Francis", false))
+	{
+		return SurvivorCharacter_Biker;
+	}
+
+	if (StrEqual(name, "Manager", false) || StrEqual(name, "Louis", false))
+	{
+		return SurvivorCharacter_Manager;
+	}
+
+	return SurvivorCharacter_Unknown;
 }
