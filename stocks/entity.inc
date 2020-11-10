@@ -960,7 +960,7 @@ stock void AddEntityTimer(int entity, EntityOutput callback, float flTime = 0.0)
 }
 
 static int m_flSimulationTime = -2;
-stock float GetEntitySimulationTime( int entity )
+stock float GetEntitySimulationTime(int entity)
 {
 	Assert(IsValidEdict(entity));
 	
