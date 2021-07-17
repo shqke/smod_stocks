@@ -21,6 +21,33 @@
 
 #define LoopThroughClients(%0) for (int %0 = MaxClients; %0; %0--)
 
+// The various states the player can be in during the join game process.
+enum PlayerState
+{
+	// Happily running around in the game.
+	// You can't move though if CSGameRules()->IsFreezePeriod() returns true.
+	// This state can jump to a bunch of other states like STATE_PICKINGCLASS or STATE_DEATH_ANIM.
+	STATE_ACTIVE=0,
+	
+	// This is the state you're in when you first enter the server.
+	// It's switching between intro cameras every few seconds, and there's a level info 
+	// screen up.
+	STATE_WELCOME,			// Show the level intro screen.
+	
+	// During these states, you can either be a new player waiting to join, or
+	// you can be a live player in the game who wants to change teams.
+	// Either way, you can't move while choosing team or class (or while any menu is up).
+	STATE_PICKINGTEAM,			// Choosing team.
+	STATE_PICKINGCLASS,			// Choosing class.
+	
+	STATE_DEATH_ANIM,			// Playing death anim, waiting for that to finish.
+	STATE_DEATH_WAIT_FOR_KEY,	// Done playing death anim. Waiting for keypress to go into observer mode.
+	STATE_OBSERVER_MODE,		// Noclipping around, watching players, etc.
+	STATE_WAITING_FOR_RESCUE,
+	STATE_GHOST,
+	NUM_PLAYER_STATES
+};
+
 stock int GetCurrentClients()
 {
 	int count = 0;
@@ -212,4 +239,14 @@ stock int ClientFromAuthId(int authId)
 	}
 	
 	return INVALID_ENT_REFERENCE;
+}
+
+static int m_iPlayerState = -2;
+stock PlayerState GetPlayerState(int client)
+{
+	Assert(IsClient(client));
+	
+	DeclareNetPropOf(client, m_iPlayerState);
+	
+	return view_as<PlayerState>(GetEntData(client, m_iPlayerState, 1));
 }
