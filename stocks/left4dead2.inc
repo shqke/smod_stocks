@@ -51,7 +51,7 @@ enum SurvivorCharacterType
 	SurvivorCharacter_Francis,
 	
 	SurvivorCharacter_Gambler = 0,
-	SurvivorCharacter_Producer = 1
+	SurvivorCharacter_Producer = 1,
 	SurvivorCharacter_Mechanic = 3,
 	SurvivorCharacter_NamVet = 4,
 	SurvivorCharacter_TeenGirl = 5,
