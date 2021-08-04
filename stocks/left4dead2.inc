@@ -39,15 +39,26 @@ enum ZombieClass
 
 enum SurvivorCharacterType
 {
-	SurvivorCharacter_Gambler = 0,
-	SurvivorCharacter_Producer,
+	SurvivorCharacter_Invalid = -1,
+	
+	SurvivorCharacter_Nick = 0,
+	SurvivorCharacter_Rochelle,
 	SurvivorCharacter_Coach,
-	SurvivorCharacter_Mechanic,
-	SurvivorCharacter_NamVet,
-	SurvivorCharacter_TeenGirl,
-	SurvivorCharacter_Biker,
-	SurvivorCharacter_Manager,
-	SurvivorCharacter_Unknown
+	SurvivorCharacter_Ellis,
+	SurvivorCharacter_Bill,
+	SurvivorCharacter_Zoey,
+	SurvivorCharacter_Louis,
+	SurvivorCharacter_Francis,
+	
+	SurvivorCharacter_Gambler = 0,
+	SurvivorCharacter_Producer = 1,
+	SurvivorCharacter_Mechanic = 3,
+	SurvivorCharacter_NamVet = 4,
+	SurvivorCharacter_TeenGirl = 5,
+	SurvivorCharacter_Manager = 6,
+	SurvivorCharacter_Biker = 7,
+	
+	SurvivorCharacter_Total,
 };
 
 static int m_zombieClass = -2;
@@ -331,11 +342,11 @@ stock int FindAvailableSurvivorBot()
 static int m_hasVisibleThreats = -2;
 stock bool HasPlayerVisibleThreats(int client) 
 {
-    Assert(IsClient(client));
+	Assert(IsClient(client));
 
-    DeclareNetPropOf(client, m_hasVisibleThreats); 
+	DeclareNetPropOf(client, m_hasVisibleThreats); 
 
-    return !!GetEntData(client, m_hasVisibleThreats, 1);
+	return !!GetEntData(client, m_hasVisibleThreats, 1);
 }
 
 static int m_frustration = -2;
@@ -403,6 +414,22 @@ stock float GetPlayerProgressBarPercent(int client)
 	Assert(IsClient(client));
 	
 	return (GetEntitySimulationTime(client) - GetPlayerProgressBarStartTime(client)) / GetPlayerProgressBarDuration(client);
+}
+
+stock SurvivorCharacterType GetSurvivorCharacter(int client, bool bL4D1Set = false)
+{
+	Assert(IsClient(client));
+	
+	any charID = GetEntProp(client, Prop_Send, "m_survivorCharacter");
+	if (charID < 0 || charID >= SurvivorCharacter_Total) {
+		return SurvivorCharacter_Invalid;
+	}
+	
+	if (bL4D1Set && charID >= SurvivorCharacter_Bill) {
+		charID -= SurvivorCharacter_Bill;
+	}
+	
+	return charID;
 }
 
 stock SurvivorCharacterType GetCharacterFromName(const char[] name)

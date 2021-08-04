@@ -102,7 +102,7 @@ stock void DissolveEntity( int entity, DissolveType_t type = ENTITY_DISSOLVE_NOR
 	
 	SetVariantString( "!activator" );
 	AcceptEntityInput( dissolver, "Dissolve", entity );
-	KillEntity( dissolver );
+	RemoveEntity( dissolver );
 }
 
 stock void StartScene( int client, const char[] scenefile )

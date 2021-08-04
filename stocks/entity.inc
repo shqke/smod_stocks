@@ -923,13 +923,6 @@ stock void DisableEntity(int entity)
 	AcceptEntityInput(entity, "Disable");
 }
 
-stock void KillEntity(int entity)
-{
-	Assert(IsValidEdict(entity));
-	
-	AcceptEntityInput(entity, "Kill");
-}
-
 stock void KillHierarchy(int entity)
 {
 	Assert(IsValidEdict(entity));
